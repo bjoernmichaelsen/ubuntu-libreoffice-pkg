@@ -3516,11 +3516,34 @@ unpack: src/fetch.log
 endif
 endif
 
+COMMA:=,
+APOSTROPHE:='
+QUOTE:="
+define sed-escape
+$(subst $(QUOTE),\x22,$(subst $(APOSTROPHE),\x27,$(subst $(COMMA),\x2c,$(1))))
+endef
+
+update-l10n:
+	dh_testdir
+	sed -e 's,@BUILD_DEPS@,$(call sed-escape,$(BUILD_DEPS)),' \
+	    -e 's,@BUILD_DEPS_INDEP@,$(call sed-escape,$(BUILD_DEPS_INDEP)),' \
+	    -e 's,@CONFIGURE_FLAGS@,$(call sed-escape,$(CONFIGURE_FLAGS)),' \
+	    -e 's,@CONFIGURE_FLAGS_LANG@,$(call sed-escape,$(CONFIGURE_FLAGS_LANG)),' \
+	    -e 's,@LANGPACKISOS@,$(call sed-escape,$(LANGPACKISOS)),' \
+	    < debian/debian-l10n/config.in > debian/debian-l10n/config
+	sed -e 's,@BUILD_DEPS@,$(call sed-escape,$(BUILD_DEPS)),' \
+	    -e 's,@BUILD_DEPS_INDEP@,$(call sed-escape,$(BUILD_DEPS_INDEP)),' \
+	    < debian/debian-l10n/control.in > debian/debian-l10n/control
+	$(foreach LANGPACKISO,$(filter-out en-US ca-valencia,$(LANGPACKISOS)),\
+		./debian/scripts/create-l10n-control \
+			$(LANGPACKISO) \
+			< debian/debian-l10n/control.lang.in \
+			>> debian/debian-l10n/control;)
 
 .PHONY: control
 .PHONY: clean-debdir clean-instsetoo clean-objectdirs clean default
 .PHONY: prepare build build-indep build-arch install-arch install-indep
-.PHONY: get-orig-source unpack patched
+.PHONY: get-orig-source unpack patched l10n-config
 .PHONY: $(stampdir_targets)
 
 # vim:set noet ai sts=8 sw=8 tw=0:
