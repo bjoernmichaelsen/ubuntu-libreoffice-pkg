@@ -1,0 +1,28 @@
+Package: libreoffice-l10n-${isocode_lower}
+Section: localization
+Architecture: all
+Depends: libreoffice-common, $${misc:Depends}, ${locales_depends}
+Recommends: libreoffice-core (>> $${base-version}) | language-support-translations-${isocode_firstpart} ${font_suggests}
+Provides: libreoffice-l10n-$${help-l10n-virtual-version}
+Suggests: hunspell-dictionary-${isocode_lower} | myspell-dictionary-${isocode_lower},
+          hyphen-${isocode_lower},
+          libreoffice-grammarcheck-${isocode_lower},
+          libreoffice-help-${isocode_lower},
+          mythes-${isocode_lower}
+Description: office productivity suite -- ${language_name} language package
+ LibreOffice is a full-featured office productivity suite that provides
+ a near drop-in replacement for Microsoft(R) Office.
+ .
+ This package contains the localization of LibreOffice in
+ ${language_name}.
+ It contains the user interface, the templates and the autotext features.
+ (please note that not all this is available for all possible languages).
+ You can switch user interface language using the locales system.
+ .
+ Spelling dictionaries, hyphenation patterns, thesauri and help are not
+ included in this package. There are some available in separate packages
+ (myspell-*, hyphen-*, mythes-*, libreoffice-help-*)
+ .
+ If you just want to be able to spellcheck etc. in other languages, you can
+ install extra dictionaries/hyphenation patterns/thesauri independently of
+ the language packs.

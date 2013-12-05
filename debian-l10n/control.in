@@ -1,0 +1,13 @@
+Source: libreoffice
+Section: editors
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian LibreOffice Maintainers <debian-openoffice@lists.debian.org>
+Uploaders: Rene Engelhard <rene@debian.org>
+Build-Depends: @BUILD_DEPS@,
+Build-Depends-Indep: fdupes, imagemagick, xml-core, @BUILD_DEPS_INDEP@
+Standards-Version: 3.9.4
+Vcs-Git: https://alioth.debian.org/anonscm/git/pkg-openoffice/libreoffice.git
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=pkg-openoffice/libreoffice.git
+Homepage: http://www.libreoffice.org
+
