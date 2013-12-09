@@ -1,0 +1,159 @@
+#!/usr/bin/python3
+import sys
+import string
+
+iso_to_name = {
+    "af" : "afrikaans",
+    "ar" : "arabic",
+    "as" : "assamese",
+    "ast" : "asturian",
+    "be" : "belarussian",
+    "bg" : "bulgarian",
+    "bn" : "bengali",
+    "bo" : "tibetan",
+    "br" : "breton",
+    "bs-BA" : "bosnian",
+    "bs" : "bosnian",
+    "ca" : "catalan",
+    "cs" : "czech",
+    "cy" : "welsh",
+    "da" : "danish",
+    "de" : "german",
+    "dz" : "dzongkha",
+    "el" : "greek",
+    "en-GB" : "english_british",
+    "en-US" : "english_american",
+    "en-ZA" : "english_southafrican",
+    "eo" : "esperanto",
+    "es" : "spanish",
+    "et" : "estonian",
+    "eu" : "basque",
+    "fa" : "farsi",
+    "fi" : "finnish",
+    "fr" : "french",
+    "ga" : "gaelic",
+    "gd" : "scottish_gaelic",
+    "gl" : "galician",
+    "gu" : "gujarati",
+    "he" : "hebrew",
+    "hi" : "hindi",
+    "hi" : "hindi",
+    "hr" : "croatian",
+    "hu" : "hungarian",
+    "id" : "indonesian",
+    "is" : "icelandic",
+    "it" : "italian",
+    "ja" : "japanese",
+    "ka" : "georgian",
+    "kk" : "kazakh",
+    "km" : "khmer",
+    "kn" : "kannada",
+    "ko" : "korean",
+    "ku" : "kurdish",
+    "lt" : "lithuanian",
+    "lv" : "latvian",
+    "mk" : "macedonian",
+    "ml" : "malayalam",
+    "mn" : "mongolian",
+    "mr" : "marathi",
+    "my" : "burmese",
+    "nb" : "norwegian",
+    "ne" : "nepalese",
+    "ne" : "nepali",
+    "nl" : "dutch",
+    "nn" : "norwegian_nynorsk",
+    "nr" : "ndebele",
+    "ns" : "northernsotho",
+    "nso" : "northern_sotho",
+    "oc" : "occitan",
+    "om" : "oromo",
+    "or" : "oriya",
+    "pa-IN" : "punjabi",
+    "pl" : "polish",
+    "pt-BR" : "portuguese_brazilian",
+    "pt" : "portuguese",
+    "ro" : "romanian",
+    "ru" : "russian",
+    "rw" : "kinarwanda",
+    "sh" : "serbian",
+    "si" : "sinhala",
+    "sk" : "slovak",
+    "sl" : "slovenian",
+    "sr" : "serbian",
+    "ss" : "swazi",
+    "st" : "southern_sotho",
+    "sv" : "swedish",
+    "ta" : "tamil",
+    "te" : "telugu",
+    "tg" : "tajik",
+    "th" : "thai",
+    "tn" : "tswana",
+    "tr" : "turkish",
+    "ts" : "tsonga",
+    "ug" : "uighur",
+    "uk" : "ukrainian",
+    "ur" : "urdu",
+    "uz" : "uzbek",
+    "ve" : "venda",
+    "vi" : "vietnamese",
+    "xh" : "xhosa",
+    "zh-CN" : "chinese_simplified",
+    "zh-TW" : "chinese_traditional",
+    "zu" : "zulu",
+}
+
+font_suggests = {}
+
+for isocode in ['bn', 'gu', 'pa-IN', 'ml', 'or', 'te', 'ta']:
+    font_suggests[isocode] = ', ttf-%s-fonts' % iso_to_name[isocode]
+for isocode in ['hi-in', 'ne', 'mr']:
+    font_suggests[isocode] = ', ttf-devanagari-fonts'
+for isocode in ['he']:
+    font_suggests[isocode] = ', culmus'
+for isocode in ['km']:
+    font_suggests[isocode] = ', font-khmeros'
+for isocode in ['ar']:
+    font_suggests[isocode] = ', font-arabeyes'
+for isocode in ['fa']:
+    font_suggests[isocode] = ', font-farsiweb'
+for isocode in ['dz']:
+    font_suggests[isocode] = ', font-dzongkha'
+for isocode in ['th']:
+    font_suggests[isocode] = ', font-thai-tlwg'
+
+locales_depends = {}
+locales_depends_default='locales | belocs-locales-data | locales-all'
+
+for isocode in ['rw']:
+    locales_depends[isocode] = 'locales (>= 2.3.6) | belocs-locales-data | locales-all (>= 2.3.6)'
+for isocode in ['ss', 'ts', 'km', 'ns', 'tn']:
+    locales_depends[isocode] = 'locales (>= 2.3.5-12) | belocs-locales-data | locales-all'
+for isocode in ['sr']:
+    locales_depends[isocode] = 'locales (>= 2.3.6.ds1-5) |  belocs-locales-data | locales-all'
+for isocode in ['as', 'or', 'nr']:
+    locales_depends[isocode] = 'locales (>= 2.3.6.ds1-1) | locales-all (>= 2.3.6.ds1-1)'
+for isocode in ['sw']:
+    locales_depends[isocode] = 'locales (>= 2.13-5) | locales-all (>= 2.13-5)'
+
+if __name__ == '__main__':
+    isocode = sys.argv[1]
+    language_name = iso_to_name[isocode]
+    language_name = language_name[0].upper() + language_name[1:]
+    isocode_firstpart = isocode
+    if isocode in font_suggests:
+        font_sug=font_suggests[isocode]
+    else:
+        font_sug=''
+    if isocode in locales_depends:
+        locales_dep=locales_depends[isocode]
+    else:
+        locales_dep=locales_depends_default
+    template_raw = ''
+    for line in sys.stdin:
+        template_raw += line
+    print(string.Template(template_raw).substitute(
+        language_name=language_name,
+        isocode_lower=isocode.lower(),
+        isocode_firstpart=isocode_firstpart,
+        font_suggests=font_sug,
+        locales_depends=locales_dep))
