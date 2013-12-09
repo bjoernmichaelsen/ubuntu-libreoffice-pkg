@@ -3538,6 +3538,8 @@ update-l10n:
 	sed -e 's,@BUILD_DEPS@,$(call sed-escape,$(BUILD_DEPS)),' \
 	    -e 's,@BUILD_DEPS_INDEP@,$(call sed-escape,$(BUILD_DEPS_INDEP)),' \
 	    < debian/debian-l10n/control.in > debian/debian-l10n/control
+	sed -e 's,^libreoffice,libreoffice-l10n,' \
+	    < debian/changelog > debian/debian-l10n/changelog
 	$(foreach LANGPACKISO,$(filter-out en-US ca-valencia,$(LANGPACKISOS)),\
 		./debian/scripts/create-l10n-control \
 			$(LANGPACKISO) \
