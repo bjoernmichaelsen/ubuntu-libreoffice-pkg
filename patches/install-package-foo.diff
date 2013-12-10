@@ -1,0 +1,281 @@
+From 69e495b0e454593537e0d9bcf8ecf6354f323ae4 Mon Sep 17 00:00:00 2001
+From: Bjoern Michaelsen <bjoern.michaelsen@canonical.com>
+Date: Thu, 21 Nov 2013 14:47:20 +0100
+Subject: [PATCH] initial install-package-foo target for partial installs
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Transfer-Encoding: 8bit
+
+make packageinfo target
+add uiconfig file translations
+add missing l10n config files
+add missing help files in packageinfo
+
+Reviewed-on: https://gerrit.libreoffice.org/6754
+Reviewed-by: BjÃ¶rn Michaelsen <bjoern.michaelsen@canonical.com>
+Tested-by: BjÃ¶rn Michaelsen <bjoern.michaelsen@canonical.com>
+
+Conflicts:
+    helpcontent2
+    translations
+
+Change-Id: Id5f6f5c1f3e46df2d9033ccd5bbf2af6ab38a9e8
+a2498a118e729276a78ef3a4eb43b5d0b302d326
+9bb39bdd677af4be0da621370c51eb9e22ecc33f
+a7e654cdeffd832f51016ff51aa180fe3924ff4e
+4ee41fdb600cb3a89da387dffe64e6a30192761c
+---
+ Makefile.in                                     |    9 ++-
+ solenv/gbuild/AllLangHelp.mk                    |    3 +
+ solenv/gbuild/AllLangPackage.mk                 |    2 +
+ solenv/gbuild/AllLangResTarget.mk               |    3 +
+ solenv/gbuild/TargetLocations.mk                |    1 +
+ solenv/gbuild/UIConfig.mk                       |    3 +
+ solenv/gbuild/extensions/post_PackageInfo.mk    |   99 +++++++++++++++++++++++
+ solenv/gbuild/extensions/post_SpeedUpTargets.mk |    2 +-
+ 8 files changed, 118 insertions(+), 4 deletions(-)
+ create mode 100644 solenv/gbuild/extensions/post_PackageInfo.mk
+
+diff --git a/Makefile.in b/Makefile.in
+index 8c64940..206f5ed 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -7,7 +7,7 @@
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ #
+ 
+-.PHONY : all bootstrap gbuild build build-non-l10n-only build-l10n-only check clean clean-build clean-host test-install distclean distro-pack-install docs download fetch findunusedcode get-submodules id install install-strip subsequentcheck tags debugrun help slowcheck translations unitcheck
++.PHONY : all bootstrap gbuild build build-non-l10n-only build-l10n-only check clean clean-build clean-host test-install distclean distro-pack-install docs download fetch findunusedcode get-submodules id install install-strip subsequentcheck tags debugrun help slowcheck translations unitcheck packageinfo
+ 
+ MAKECMDGOALS?=all
+ 
+@@ -220,12 +220,12 @@ endif
+        $(if $(filter build check,$(MAKECMDGOALS)),all) \
+        $(if $(filter build-nocheck,$(MAKECMDGOALS)),build) \
+        $(if $(filter check,$(MAKECMDGOALS)),subsequentcheck) \
+-       $(filter all build-l10n-only build-non-l10n-only debugrun help slowcheck translations unitcheck subsequentcheck check,$(MAKECMDGOALS))
++       $(filter all build-l10n-only build-non-l10n-only debugrun help slowcheck translations unitcheck subsequentcheck check packageinfo,$(MAKECMDGOALS))
+ ifeq ($(OS),IOS)
+    $(GNUMAKE) -j $(PARALLELISM) $(GMAKE_OPTIONS) ios
+ endif
+ 
+-build-non-l10n-only build-l10n-only build-nocheck check debugrun help slowcheck translations unitcheck subsequentcheck : build
++build-non-l10n-only build-l10n-only build-nocheck check debugrun help slowcheck translations unitcheck subsequentcheck packageinfo: build
+ 
+ cross-toolset: bootstrap fetch
+    $(GNUMAKE) gb_Side=build -j $(PARALLELISM) $(GMAKE_OPTIONS) -f $(SRCDIR)/Makefile.gbuild build-tools
+@@ -302,6 +302,9 @@ distro-pack-install: install
+    $(SRCDIR)/bin/distro-install-sdk
+    $(SRCDIR)/bin/distro-install-file-lists
+ 
++install-package-%:
++   $(GNUMAKE) $(GMAKE_OPTIONS) -f $(SRCDIR)/Makefile.gbuild $@
++
+ id:
+    @create-ids
+ 
+diff --git a/solenv/gbuild/AllLangHelp.mk b/solenv/gbuild/AllLangHelp.mk
+index a5547dd..dca6c70 100644
+--- a/solenv/gbuild/AllLangHelp.mk
++++ b/solenv/gbuild/AllLangHelp.mk
+@@ -49,7 +49,10 @@ endef
+ # Create and deliver help packs for a module for all languages.
+ #
+ # gb_AllLangHelp_AllLangHelp module
++gb_AllLangHelp_ALLTARGETS :=
++
+ define gb_AllLangHelp_AllLangHelp
++gb_AllLangHelp_ALLTARGETS += $(1)
+ $(foreach lang,$(gb_HELP_LANGS),\
+    $(call gb_AllLangHelp_AllLangHelp__one_lang,$(1),$(lang),$(call gb_AllLangHelp__get_helpname,$(1),$(lang))))
+ 
+diff --git a/solenv/gbuild/AllLangPackage.mk b/solenv/gbuild/AllLangPackage.mk
+index cc8c0b8..8a691cd 100644
+--- a/solenv/gbuild/AllLangPackage.mk
++++ b/solenv/gbuild/AllLangPackage.mk
+@@ -68,7 +68,9 @@ endef
+ # (i.e., if we are building with the language).
+ #
+ # gb_AllLangPackage_add_file target destination source
++gb_AllLangPackage_ALLDIRS :=
+ define gb_AllLangPackage_add_file
++gb_AllLangPackage_ALLDIRS := $(sort $(gb_AllLangPackage_ALLDIRS) $(patsubst %$(3),%,$(2)))
+ $(call gb_AllLangPackage__add_file,$(1),$(2),$(3),$(firstword $(subst /, ,$(3))))
+ 
+ endef
+diff --git a/solenv/gbuild/AllLangResTarget.mk b/solenv/gbuild/AllLangResTarget.mk
+index c1bf16a..35afd1a 100644
+--- a/solenv/gbuild/AllLangResTarget.mk
++++ b/solenv/gbuild/AllLangResTarget.mk
+@@ -401,6 +401,7 @@ $(call gb_ResTarget_get_target,%) : $(gb_Helper_MISCDUMMY) \
+        $(gb_ResTarget_RSCCOMMAND) @$${RESPONSEFILE} && \
+        rm -f $${RESPONSEFILE})
+ 
++#$(info $(call gb_ResTarget_get_target,$(1)))
+ define gb_ResTarget_ResTarget
+ $(call gb_ResTarget_get_target,$(1)) : LIBRARY = $(2)
+ $(call gb_ResTarget_get_target,$(1)) : LANGUAGE = $(3)
+@@ -457,7 +458,9 @@ $(call gb_AllLangResTarget_get_target,%) :
+ 
+ gb_ResTarget_get_install_target = $(INSTROOT)/$(LIBO_SHARE_RESOURCE_FOLDER)/$(1).res
+ 
++gb_AllLangResTarget_ALLTARGETS :=
+ define gb_AllLangResTarget_AllLangResTarget
++gb_AllLangResTarget_ALLTARGETS += $(1)
+ $(foreach lang,$(gb_AllLangResTarget_LANGS),\
+    $(call gb_ResTarget_ResTarget,$(1)$(lang),$(1),$(lang)))
+ 
+diff --git a/solenv/gbuild/TargetLocations.mk b/solenv/gbuild/TargetLocations.mk
+index 8976f44..d7855b3 100644
+--- a/solenv/gbuild/TargetLocations.mk
++++ b/solenv/gbuild/TargetLocations.mk
+@@ -126,6 +126,7 @@ gb_Package_get_preparation_target = $(WORKDIR)/Package/prepared/$(1)
+ gb_Package_get_target = $(WORKDIR)/Package/$(1).filelist
+ gb_Package_get_target_for_build = $(WORKDIR_FOR_BUILD)/Package/$(1).filelist
+ gb_PackageSet_get_target = $(WORKDIR)/PackageSet/$(1).filelist
++gb_PackageInfo_get_target = $(WORKDIR)/PackageInfo
+ gb_Postprocess_get_target = $(WORKDIR)/Postprocess/$(1)
+ gb_PrecompiledHeader_get_dep_target = $(WORKDIR)/Dep/PrecompiledHeader/$(gb_PrecompiledHeader_DEBUGDIR)/$(1).hxx.gch.d
+ gb_PrecompiledHeader_get_target = $(WORKDIR)/PrecompiledHeader/$(gb_PrecompiledHeader_DEBUGDIR)/$(1).hxx.gch
+diff --git a/solenv/gbuild/UIConfig.mk b/solenv/gbuild/UIConfig.mk
+index 657d362..07e6a13 100644
+--- a/solenv/gbuild/UIConfig.mk
++++ b/solenv/gbuild/UIConfig.mk
+@@ -305,12 +305,15 @@ $(call gb_UIConfig__add_translations,$(1),$(2),\
+ 
+ endef
+ 
++
++gb_UIConfig_ALLFILES:=
+ # Adds .ui file to the package
+ #
+ # The file is relative to $(SRCDIR) and without extension.
+ #
+ # gb_UIConfig_add_uifile target uifile
+ define gb_UIConfig_add_uifile
++gb_UIConfig_ALLFILES+=$(1):$(notdir $(2))
+ $(call gb_UIConfig__add_uifile,$(1),$(2))
+ 
+ ifneq ($(gb_UIConfig_LANGS),)
+diff --git a/solenv/gbuild/extensions/post_PackageInfo.mk b/solenv/gbuild/extensions/post_PackageInfo.mk
+new file mode 100644
+index 0000000..54d6c5f
+--- /dev/null
++++ b/solenv/gbuild/extensions/post_PackageInfo.mk
+@@ -0,0 +1,99 @@
++# -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
++#
++# This file is part of the LibreOffice project.
++#
++# This Source Code Form is subject to the terms of the Mozilla Public
++# License, v. 2.0. If a copy of the MPL was not distributed with this
++# file, You can obtain one at http://mozilla.org/MPL/2.0/.
++#
++
++gb_PackageInfo_InstallModules := \
++   base \
++   calc \
++   graphicsfilter \
++   tde \
++   impress \
++   onlineupdate \
++   gnome \
++   kde \
++   math \
++   ooo \
++   writer \
++   ure \
++   activexbinarytable \
++   ooobinarytable \
++   winexplorerextbinarytable \
++
++define gb_PackageInfo_emit_binaries_command
++@touch $(foreach suf,executables libraries files,$(gb_PackageInfo_get_target)/$(1).$(suf))
++@$(foreach executable,$(gb_Executable_MODULE_$(1)),echo "$(patsubst $(INSTDIR)/%,%,$(call gb_Executable_get_target,$(executable)))" >> $(gb_PackageInfo_get_target)/$(1).executables &&) true
++@$(foreach library,$(gb_Library_MODULE_$(1)),echo "$(patsubst $(INSTDIR)/%,%,$(call gb_Library_get_target,$(library)))" >> $(gb_PackageInfo_get_target)/$(1).libraries &&) true
++
++endef
++
++define gb_PackageInfo_emit_help_for_one_target
++$(foreach suf,cfg db ht idxl/_0.cfs idxl/segments_3 idxl/segments.gen jar key tree,$(if $(wildcard $(INSTDIR)/help/$(1).$(suf)),echo "help/$(1).$(suf)" >> $(2) && )) true
++
++endef
++
++define gb_PackageInfo_emit_help_for_one_lang
++@touch $(foreach suf,executables libraries files,$(gb_PackageInfo_get_target)/help-$(1).$(suf))
++$(foreach target,$(gb_AllLangHelp_ALLTARGETS),$(call gb_PackageInfo_emit_help_for_one_target,$(1)/$(target),$(gb_PackageInfo_get_target)/help-$(1).files))
++$(foreach suf,html css,$(foreach file,$(wildcard $(INSTDIR)/help/$(1)/*.$(suf)),echo "$(patsubst $(INSTDIR)/%,%,$(file))" >> $(gb_PackageInfo_get_target)/help-$(1).files && )) true
++
++endef
++
++#getting the package files post-hoc with wildcard isnt good and should be done better
++define gb_PackageInfo_emit_l10n_for_one_alllangpackage
++@$(foreach file,$(shell ls $(INSTDIR)/$(1)/$(2)),echo "$(1)/$(2)/$(file)" >> $(gb_PackageInfo_get_target)/l10n-$(2).files &&) true
++
++endef
++
++define gb_PackageInfo_emit_l10n_for_one_ressource
++@echo "$(patsubst $(INSTDIR)/%,%,$(call gb_ResTarget_get_install_target,$(1)$(2)))" >> $(gb_PackageInfo_get_target)/l10n-$(2).files
++
++endef
++
++define gb_PackageInfo_emit_l10n_for_one_uifile
++@echo "$(gb_UIConfig_INSTDIR)/$(2)/ui/res/$(1)/$(3)" >> $(gb_PackageInfo_get_target)/l10n-$(1).files
++
++endef
++
++define gb_PackageInfo_emit_l10n_for_one_configfile
++echo "$(LIBO_SHARE_FOLDER)/registry/$(2)$(1).xcd" >> $(gb_PackageInfo_get_target)/l10n-$(1).files
++
++endef 
++
++define gb_PackageInfo_emit_l10n_for_one_lang
++@touch $(foreach suf,executables libraries files,$(gb_PackageInfo_get_target)/l10n-$(1).$(suf))
++$(if $(filter-out qtz en-US,$(1)),$(foreach packagedir,$(patsubst %/,%,$(gb_AllLangPackage_ALLDIRS)),$(call gb_PackageInfo_emit_l10n_for_one_alllangpackage,$(packagedir),$(1))))
++$(if $(filter $(gb_AllLangResTarget_LANGS),$(1)),$(foreach target,$(gb_AllLangResTarget_ALLTARGETS),$(call gb_PackageInfo_emit_l10n_for_one_ressource,$(target),$(1))))
++$(foreach uifile,$(gb_UIConfig_ALLFILES),$(call gb_PackageInfo_emit_l10n_for_one_uifile,$(1),$(firstword $(subst :,$(WHITESPACE),$(uifile))),$(lastword $(subst :,$(WHITESPACE),$(uifile)))))
++$(if $(filter $(gb_Configuration_LANGS),$(1)),$(foreach configfile,Langpack- res/fcfg_langpack_ res/registry_,$(call gb_PackageInfo_emit_l10n_for_one_configfile,$(1),$(configfile))))
++
++endef
++
++.PHONY: packageinfo
++$(foreach filelist,files executables libraries,$(gb_PackageInfo_get_target)/%.$(filelist)):
++   @rm -rf $(gb_PackageInfo_get_target) && mkdir $(gb_PackageInfo_get_target)
++   $(foreach installmodule,$(gb_PackageInfo_InstallModules),$(call gb_PackageInfo_emit_binaries_command,$(installmodule)))
++   $(foreach helplang,$(gb_HELP_LANGS),$(call gb_PackageInfo_emit_help_for_one_lang,$(helplang)))
++   $(foreach l10nlang,$(if $(strip $(gb_WITH_LANG)),$(gb_WITH_LANG),en-US),$(call gb_PackageInfo_emit_l10n_for_one_lang,$(l10nlang)))
++
++packageinfo: $(gb_PackageInfo_get_target)/ure.files
++
++install-package-%: $(foreach filelist,files executables libraries,$(gb_PackageInfo_get_target)/%.$(filelist))
++   for executable in `cat $(gb_PackageInfo_get_target)/$*.executables`; \
++   do \
++       install -D $(INSTDIR)/$${executable} $(INSTALLDIR)/$${executable} ;\
++   done
++   for library in `cat $(gb_PackageInfo_get_target)/$*.libraries`; \
++   do \
++       install -D -m644 $(INSTDIR)/$${library} $(INSTALLDIR)/$${library}; \
++   done
++   for file in `cat $(gb_PackageInfo_get_target)/$*.files`; \
++   do \
++       install -D -m644 $(INSTDIR)/$${file} $(INSTALLDIR)/$${file}; \
++   done
++
++# vim: set noet sw=4 ts=4:
+diff --git a/solenv/gbuild/extensions/post_SpeedUpTargets.mk b/solenv/gbuild/extensions/post_SpeedUpTargets.mk
+index 3f3e562..4b97d46 100644
+--- a/solenv/gbuild/extensions/post_SpeedUpTargets.mk
++++ b/solenv/gbuild/extensions/post_SpeedUpTargets.mk
+@@ -24,7 +24,7 @@ ifneq ($(strip $(MAKECMDGOALS)),)
+ # speed up depending on the target
+ gb_SpeedUpTargets_LEVEL_4 := debugrun help translations
+ gb_SpeedUpTargets_LEVEL_3 := showmodules $(gb_SpeedUpTargets_LEVEL_4)
+-gb_SpeedUpTargets_LEVEL_2 := $(gb_SpeedUpTargets_LEVEL_3)
++gb_SpeedUpTargets_LEVEL_2 := $(gb_SpeedUpTargets_LEVEL_3) install-package-%
+ gb_SpeedUpTargets_LEVEL_1 := clean showdeliverables $(gb_SpeedUpTargets_LEVEL_2)
+ 
+ ifeq (T,$(if $(filter-out $(gb_SpeedUpTargets_LEVEL_1),$(MAKECMDGOALS)),,T))
+-- 
+1.7.9.5
+
+

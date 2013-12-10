@@ -1,0 +1,27 @@
+From f745a91478a8bc15079a58a8b3adc9602321b612 Mon Sep 17 00:00:00 2001
+From: Bjoern Michaelsen <bjoern.michaelsen@canonical.com>
+Date: Thu, 21 Nov 2013 12:35:34 +0100
+Subject: [PATCH] l10n and non-l10n targets missing dep on build
+
+Change-Id: Ia6d09a1625819593291649369a7533bbd2ee8227
+---
+ Makefile.in |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile.in b/Makefile.in
+index 6918e22..8c64940 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -225,7 +225,7 @@ ifeq ($(OS),IOS)
+    $(GNUMAKE) -j $(PARALLELISM) $(GMAKE_OPTIONS) ios
+ endif
+ 
+-build-nocheck check debugrun help slowcheck translations unitcheck subsequentcheck : build
++build-non-l10n-only build-l10n-only build-nocheck check debugrun help slowcheck translations unitcheck subsequentcheck : build
+ 
+ cross-toolset: bootstrap fetch
+    $(GNUMAKE) gb_Side=build -j $(PARALLELISM) $(GMAKE_OPTIONS) -f $(SRCDIR)/Makefile.gbuild build-tools
+-- 
+1.7.9.5
+
+
