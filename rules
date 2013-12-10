@@ -3532,7 +3532,7 @@ update-l10n:
 	    -e 's,@LANGPACKISOS@,$(call sed-escape,$(LANGPACKISOS)),' \
 	    -e 's,@ISOS@,$(call sed-escape,$(ISOS)),' \
 	    -e 's,@HELPISOS@,$(call sed-escape,$(HELPISOS)),' \
-	    -e 's,@BUILD_PATH@,$(call sed-escape,$(BUILD_PATH)),' \
+	    -e 's,@BUILD_PATH@,$(call sed-escape,$(subst $$,$$$$,$(BUILD_PATH))),' \
 	    -e 's,@BUILD_LD_LIBRARY_PATH@,$(call sed-escape,$(BUILD_LD_LIBRARY_PATH)),' \
 	    < debian/debian-l10n/config.in > debian/debian-l10n/config
 	sed -e 's,@BUILD_DEPS@,$(call sed-escape,$(BUILD_DEPS)),' \
