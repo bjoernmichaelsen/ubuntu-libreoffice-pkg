@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 CURDIR ?= $(realpath $(dir $(firstword $(MAKEFILE_LIST)))/..)
-include $(CURDIR)/config
+include $(CURDIR)/debian/config
 BASE_VERSION:=$(shell echo $(DEB_VERSION) | cut -d: -f1):$(DEB_VERSION_UPSTREAM)
 BINARY_VERSION=$(DEB_VERSION)
 HELP_L10N_VIRTUAL_VERSION:=4.1
