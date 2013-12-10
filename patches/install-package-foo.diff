@@ -36,10 +36,10 @@ a7e654cdeffd832f51016ff51aa180fe3924ff4e
  8 files changed, 118 insertions(+), 4 deletions(-)
  create mode 100644 solenv/gbuild/extensions/post_PackageInfo.mk
 
-diff --git a/Makefile.in b/Makefile.in
-index 8c64940..206f5ed 100644
---- a/Makefile.in
-+++ b/Makefile.in
+Index: libreoffice-l10n-4.2.0~beta1/Makefile.in
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/Makefile.in	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/Makefile.in	2013-12-10 22:23:41.859557333 +0100
 @@ -7,7 +7,7 @@
  # file, You can obtain one at http://mozilla.org/MPL/2.0/.
  #
@@ -49,36 +49,36 @@ index 8c64940..206f5ed 100644
  
  MAKECMDGOALS?=all
  
-@@ -220,12 +220,12 @@ endif
-        $(if $(filter build check,$(MAKECMDGOALS)),all) \
-        $(if $(filter build-nocheck,$(MAKECMDGOALS)),build) \
-        $(if $(filter check,$(MAKECMDGOALS)),subsequentcheck) \
--       $(filter all build-l10n-only build-non-l10n-only debugrun help slowcheck translations unitcheck subsequentcheck check,$(MAKECMDGOALS))
-+       $(filter all build-l10n-only build-non-l10n-only debugrun help slowcheck translations unitcheck subsequentcheck check packageinfo,$(MAKECMDGOALS))
+@@ -220,12 +220,12 @@
+ 		$(if $(filter build,$(MAKECMDGOALS)),all) \
+ 		$(if $(filter build-nocheck,$(MAKECMDGOALS)),build) \
+ 		$(if $(filter check,$(MAKECMDGOALS)),subsequentcheck) \
+-		$(filter all build-l10n-only build-non-l10n-only debugrun help slowcheck translations unitcheck subsequentcheck check,$(MAKECMDGOALS))
++		$(filter all build-l10n-only build-non-l10n-only debugrun help slowcheck translations unitcheck subsequentcheck check packageinfo,$(MAKECMDGOALS))
  ifeq ($(OS),IOS)
-    $(GNUMAKE) -j $(PARALLELISM) $(GMAKE_OPTIONS) ios
+ 	$(GNUMAKE) -j $(PARALLELISM) $(GMAKE_OPTIONS) ios
  endif
  
 -build-non-l10n-only build-l10n-only build-nocheck check debugrun help slowcheck translations unitcheck subsequentcheck : build
 +build-non-l10n-only build-l10n-only build-nocheck check debugrun help slowcheck translations unitcheck subsequentcheck packageinfo: build
  
  cross-toolset: bootstrap fetch
-    $(GNUMAKE) gb_Side=build -j $(PARALLELISM) $(GMAKE_OPTIONS) -f $(SRCDIR)/Makefile.gbuild build-tools
-@@ -302,6 +302,9 @@ distro-pack-install: install
-    $(SRCDIR)/bin/distro-install-sdk
-    $(SRCDIR)/bin/distro-install-file-lists
+ 	$(GNUMAKE) gb_Side=build -j $(PARALLELISM) $(GMAKE_OPTIONS) -f $(SRCDIR)/Makefile.gbuild build-tools
+@@ -302,6 +302,9 @@
+ 	$(SRCDIR)/bin/distro-install-sdk
+ 	$(SRCDIR)/bin/distro-install-file-lists
  
 +install-package-%:
 +   $(GNUMAKE) $(GMAKE_OPTIONS) -f $(SRCDIR)/Makefile.gbuild $@
 +
  id:
-    @create-ids
+ 	@create-ids
  
-diff --git a/solenv/gbuild/AllLangHelp.mk b/solenv/gbuild/AllLangHelp.mk
-index a5547dd..dca6c70 100644
---- a/solenv/gbuild/AllLangHelp.mk
-+++ b/solenv/gbuild/AllLangHelp.mk
-@@ -49,7 +49,10 @@ endef
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/AllLangHelp.mk
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/solenv/gbuild/AllLangHelp.mk	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/AllLangHelp.mk	2013-12-10 22:20:44.723566748 +0100
+@@ -49,7 +49,10 @@
  # Create and deliver help packs for a module for all languages.
  #
  # gb_AllLangHelp_AllLangHelp module
@@ -87,13 +87,13 @@ index a5547dd..dca6c70 100644
  define gb_AllLangHelp_AllLangHelp
 +gb_AllLangHelp_ALLTARGETS += $(1)
  $(foreach lang,$(gb_HELP_LANGS),\
-    $(call gb_AllLangHelp_AllLangHelp__one_lang,$(1),$(lang),$(call gb_AllLangHelp__get_helpname,$(1),$(lang))))
+ 	$(call gb_AllLangHelp_AllLangHelp__one_lang,$(1),$(lang),$(call gb_AllLangHelp__get_helpname,$(1),$(lang))))
  
-diff --git a/solenv/gbuild/AllLangPackage.mk b/solenv/gbuild/AllLangPackage.mk
-index cc8c0b8..8a691cd 100644
---- a/solenv/gbuild/AllLangPackage.mk
-+++ b/solenv/gbuild/AllLangPackage.mk
-@@ -68,7 +68,9 @@ endef
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/AllLangPackage.mk
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/solenv/gbuild/AllLangPackage.mk	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/AllLangPackage.mk	2013-12-10 22:20:44.723566748 +0100
+@@ -68,7 +68,9 @@
  # (i.e., if we are building with the language).
  #
  # gb_AllLangPackage_add_file target destination source
@@ -103,19 +103,19 @@ index cc8c0b8..8a691cd 100644
  $(call gb_AllLangPackage__add_file,$(1),$(2),$(3),$(firstword $(subst /, ,$(3))))
  
  endef
-diff --git a/solenv/gbuild/AllLangResTarget.mk b/solenv/gbuild/AllLangResTarget.mk
-index c1bf16a..35afd1a 100644
---- a/solenv/gbuild/AllLangResTarget.mk
-+++ b/solenv/gbuild/AllLangResTarget.mk
-@@ -401,6 +401,7 @@ $(call gb_ResTarget_get_target,%) : $(gb_Helper_MISCDUMMY) \
-        $(gb_ResTarget_RSCCOMMAND) @$${RESPONSEFILE} && \
-        rm -f $${RESPONSEFILE})
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/AllLangResTarget.mk
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/solenv/gbuild/AllLangResTarget.mk	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/AllLangResTarget.mk	2013-12-10 22:20:44.727566747 +0100
+@@ -401,6 +401,7 @@
+ 		$(gb_ResTarget_RSCCOMMAND) @$${RESPONSEFILE} && \
+ 		rm -f $${RESPONSEFILE})
  
 +#$(info $(call gb_ResTarget_get_target,$(1)))
  define gb_ResTarget_ResTarget
  $(call gb_ResTarget_get_target,$(1)) : LIBRARY = $(2)
  $(call gb_ResTarget_get_target,$(1)) : LANGUAGE = $(3)
-@@ -457,7 +458,9 @@ $(call gb_AllLangResTarget_get_target,%) :
+@@ -457,7 +458,9 @@
  
  gb_ResTarget_get_install_target = $(INSTROOT)/$(LIBO_SHARE_RESOURCE_FOLDER)/$(1).res
  
@@ -123,13 +123,13 @@ index c1bf16a..35afd1a 100644
  define gb_AllLangResTarget_AllLangResTarget
 +gb_AllLangResTarget_ALLTARGETS += $(1)
  $(foreach lang,$(gb_AllLangResTarget_LANGS),\
-    $(call gb_ResTarget_ResTarget,$(1)$(lang),$(1),$(lang)))
+ 	$(call gb_ResTarget_ResTarget,$(1)$(lang),$(1),$(lang)))
  
-diff --git a/solenv/gbuild/TargetLocations.mk b/solenv/gbuild/TargetLocations.mk
-index 8976f44..d7855b3 100644
---- a/solenv/gbuild/TargetLocations.mk
-+++ b/solenv/gbuild/TargetLocations.mk
-@@ -126,6 +126,7 @@ gb_Package_get_preparation_target = $(WORKDIR)/Package/prepared/$(1)
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/TargetLocations.mk
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/solenv/gbuild/TargetLocations.mk	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/TargetLocations.mk	2013-12-10 22:20:44.727566747 +0100
+@@ -126,6 +126,7 @@
  gb_Package_get_target = $(WORKDIR)/Package/$(1).filelist
  gb_Package_get_target_for_build = $(WORKDIR_FOR_BUILD)/Package/$(1).filelist
  gb_PackageSet_get_target = $(WORKDIR)/PackageSet/$(1).filelist
@@ -137,11 +137,11 @@ index 8976f44..d7855b3 100644
  gb_Postprocess_get_target = $(WORKDIR)/Postprocess/$(1)
  gb_PrecompiledHeader_get_dep_target = $(WORKDIR)/Dep/PrecompiledHeader/$(gb_PrecompiledHeader_DEBUGDIR)/$(1).hxx.gch.d
  gb_PrecompiledHeader_get_target = $(WORKDIR)/PrecompiledHeader/$(gb_PrecompiledHeader_DEBUGDIR)/$(1).hxx.gch
-diff --git a/solenv/gbuild/UIConfig.mk b/solenv/gbuild/UIConfig.mk
-index 657d362..07e6a13 100644
---- a/solenv/gbuild/UIConfig.mk
-+++ b/solenv/gbuild/UIConfig.mk
-@@ -305,12 +305,15 @@ $(call gb_UIConfig__add_translations,$(1),$(2),\
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/UIConfig.mk
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/solenv/gbuild/UIConfig.mk	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/UIConfig.mk	2013-12-10 22:20:44.727566747 +0100
+@@ -305,12 +305,15 @@
  
  endef
  
@@ -157,11 +157,10 @@ index 657d362..07e6a13 100644
  $(call gb_UIConfig__add_uifile,$(1),$(2))
  
  ifneq ($(gb_UIConfig_LANGS),)
-diff --git a/solenv/gbuild/extensions/post_PackageInfo.mk b/solenv/gbuild/extensions/post_PackageInfo.mk
-new file mode 100644
-index 0000000..54d6c5f
---- /dev/null
-+++ b/solenv/gbuild/extensions/post_PackageInfo.mk
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/extensions/post_PackageInfo.mk
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/extensions/post_PackageInfo.mk	2013-12-10 22:20:44.727566747 +0100
 @@ -0,0 +1,99 @@
 +# -*- Mode: makefile-gmake; tab-width: 4; indent-tabs-mode: t -*-
 +#
@@ -262,11 +261,11 @@ index 0000000..54d6c5f
 +   done
 +
 +# vim: set noet sw=4 ts=4:
-diff --git a/solenv/gbuild/extensions/post_SpeedUpTargets.mk b/solenv/gbuild/extensions/post_SpeedUpTargets.mk
-index 3f3e562..4b97d46 100644
---- a/solenv/gbuild/extensions/post_SpeedUpTargets.mk
-+++ b/solenv/gbuild/extensions/post_SpeedUpTargets.mk
-@@ -24,7 +24,7 @@ ifneq ($(strip $(MAKECMDGOALS)),)
+Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/extensions/post_SpeedUpTargets.mk
+===================================================================
+--- libreoffice-l10n-4.2.0~beta1.orig/solenv/gbuild/extensions/post_SpeedUpTargets.mk	2013-12-10 22:20:44.731566747 +0100
++++ libreoffice-l10n-4.2.0~beta1/solenv/gbuild/extensions/post_SpeedUpTargets.mk	2013-12-10 22:20:44.727566747 +0100
+@@ -24,7 +24,7 @@
  # speed up depending on the target
  gb_SpeedUpTargets_LEVEL_4 := debugrun help translations
  gb_SpeedUpTargets_LEVEL_3 := showmodules $(gb_SpeedUpTargets_LEVEL_4)
@@ -275,7 +274,3 @@ index 3f3e562..4b97d46 100644
  gb_SpeedUpTargets_LEVEL_1 := clean showdeliverables $(gb_SpeedUpTargets_LEVEL_2)
  
  ifeq (T,$(if $(filter-out $(gb_SpeedUpTargets_LEVEL_1),$(MAKECMDGOALS)),,T))
--- 
-1.7.9.5
-
-
