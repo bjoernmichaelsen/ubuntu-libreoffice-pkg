@@ -3545,6 +3545,7 @@ update-l10n:
 			$(LANGPACKISO) \
 			< debian/debian-l10n/control.lang.in \
 			>> debian/debian-l10n/control;)
+	cp ./debian/compat ./debian/debian-l10n/compat
 
 .PHONY: control
 .PHONY: clean-debdir clean-instsetoo clean-objectdirs clean default
