@@ -239,10 +239,10 @@ Index: libreoffice-l10n-4.2.0~beta1/solenv/gbuild/extensions/post_PackageInfo.mk
 +
 +.PHONY: packageinfo
 +$(foreach filelist,files executables libraries,$(gb_PackageInfo_get_target)/%.$(filelist)):
-+   @rm -rf $(gb_PackageInfo_get_target) && mkdir $(gb_PackageInfo_get_target)
-+   $(foreach installmodule,$(gb_PackageInfo_InstallModules),$(call gb_PackageInfo_emit_binaries_command,$(installmodule)))
-+   $(foreach helplang,$(gb_HELP_LANGS),$(call gb_PackageInfo_emit_help_for_one_lang,$(helplang)))
-+   $(foreach l10nlang,$(if $(strip $(gb_WITH_LANG)),$(gb_WITH_LANG),en-US),$(call gb_PackageInfo_emit_l10n_for_one_lang,$(l10nlang)))
++	@rm -rf $(gb_PackageInfo_get_target) && mkdir $(gb_PackageInfo_get_target)
++	$(foreach installmodule,$(gb_PackageInfo_InstallModules),$(call gb_PackageInfo_emit_binaries_command,$(installmodule)))
++	$(foreach helplang,$(gb_HELP_LANGS),$(call gb_PackageInfo_emit_help_for_one_lang,$(helplang)))
++	$(foreach l10nlang,$(if $(strip $(gb_WITH_LANG)),$(gb_WITH_LANG),en-US),$(call gb_PackageInfo_emit_l10n_for_one_lang,$(l10nlang)))
 +
 +packageinfo: $(gb_PackageInfo_get_target)/ure.files
 +
