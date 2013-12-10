@@ -3546,7 +3546,7 @@ update-l10n:
 			< debian/debian-l10n/control.lang.in \
 			>> debian/debian-l10n/control;)
 	cp ./debian/compat ./debian/debian-l10n/compat
-	mkdir ./debian/debian-l10n/source/format && \
+	mkdir ./debian/debian-l10n/source/ && \
 		cp ./debian/source/format ./debian/debian-l10n/source/format
 
 .PHONY: control
