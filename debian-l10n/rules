@@ -1,0 +1,255 @@
+#!/usr/bin/make -f
+CURDIR ?= $(realpath $(dir $(firstword $(MAKEFILE_LIST)))/..)
+include $(CURDIR)/config
+BASE_VERSION:=$(shell echo $(DEB_VERSION) | cut -d: -f1):$(DEB_VERSION_UPSTREAM)
+BINARY_VERSION=$(DEB_VERSION)
+HELP_L10N_VIRTUAL_VERSION:=4.1
+OOVER:=4.2
+NEXT_OOVER:=$(shell echo "$(OOVER) + 0.1" | bc)
+
+ARCH_INDEP_PACKAGES := $(shell dh_listpackages -i)
+ARCH_DEP_PACKAGES := $(shell dh_listpackages -s)
+PACKAGES := $(ARCH_INDEP_PACKAGES) $(ARCH_DEP_PACKAGES)
+
+include /usr/share/dpkg/architecture.mk
+include /usr/share/dpkg/vendor.mk
+SHELL:=/bin/bash
+export gb_SHELL:=$(SHELL)
+
+SYSTEM_GCC_VERSION = $(shell gcc --version | sed -n '/^gcc/s/.*\(.\..\)\..$$/\1/p')
+
+PKGDIR:=debian/libreoffice
+OODIRNAME=libreoffice
+OODIR:=usr/lib/$(OODIRNAME)
+OOUREDIR:=usr/lib/ure
+OOSDKDIR:=$(OODIR)/sdk
+
+
+# debhelper
+export DH_OPTIONS
+export DH_ALWAYS_EXCLUDE=CVS:.svn:.bzr:.git
+#export DH_VERBOSE=1
+# quilt
+export QUILT_PATCHES=debian/patches
+export QUILT_OPTIONS="-p1 -F0"
+
+SOURCE_TREE=.
+STAMP_DIR=debian/stampdir
+TARFILE_LOCATION=$(CURDIR)/src
+export TARFILE_LOCATION
+
+BUILDDEB_OPTIONS ?= -- -Zxz
+
+export DPKG_EXPORT_BUILDFLAGS=y 
+include /usr/share/dpkg/buildflags.mk
+
+clean:
+	dh_testroot
+	dh_testdir
+	if [ -f config.status ]; then \
+		$(MAKE) distclean; \
+		rm -f config.status; \
+	fi
+	rm -rf $(SOURCE_TREE)/file-lists
+	rm -f autogen.lastrun
+	rm -f config/config_version.h
+	dh_clean
+
+prepare: $(STAMP_DIR)/prepare
+$(STAMP_DIR)/prepare:
+	dh_testdir
+	mkdir -p $(STAMP_DIR)
+	touch $@
+
+build-indep: $(STAMP_DIR)/prepare $(STAMP_DIR)/build-indep
+$(STAMP_DIR)/build-indep:
+	dh_testdir
+	PATH=$(BUILD_PATH) LD_LIBRARY_PATH=$(BUILD_LD_LIBRARY_PATH) \
+	PYTHON=$(PYTHON) PYTHON_CFLAGS="$(shell pkg-config --cflags python-$(PYMAJOR).$(PYMINOR))" PYTHON_LIBS="$(shell pkg-config --libs python-$(PYMAJOR).$(PYMINOR))" \
+	MARIADBCONFIG=$(MARIADBCONFIG) \
+	FIREBIRD_CFLAGS=$(FIREBIRD_CFLAGS) FIREBIRD_LIBS=$(FIREBIRD_LIBS) \
+	./autogen.sh $(CONFIGURE_FLAGS) --with-help $(CONFIGURE_FLAGS_LANG)
+	PATH=$(BUILD_PATH) LD_LIBRARY_PATH=$(BUILD_LD_LIBRARY_PATH) TMP=`mktemp -q -d` $(MAKE) build-l10n-only
+	touch $@
+
+install-indep: $(STAMP_DIR)/install-indep
+$(STAMP_DIR)/install-indep:
+	dh_testdir
+	dh_testroot
+	if [ -x /usr/bin/dh_prep ]; then dh_prep; else dh_clean -k; fi
+	rm -f debian/*.install debian/*.dirs
+	cd $(CURDIR)/debian/tmp/pkg && rm -rf \*
+	cp -la $(SOURCE_TREE)/instdir/ $(CURDIR)/debian/tmp
+	find $(CURDIR)/debian/tmp -name '*.so' | xargs rm
+	
+	# and ca-valencia in -ca...
+ifeq (ca-valencia,$(findstring ca-valencia,$(LANGPACKISOS)))
+	if [ -f debian/libreoffice-l10n-ca-valencia.dirs -a -f debian/libreoffice-l10n-ca-valencia.install ]; then \
+		cat debian/libreoffice-l10n-ca-valencia.dirs >> debian/libreoffice-l10n-ca.dirs; \
+		cat debian/libreoffice-l10n-ca-valencia.install >> debian/libreoffice-l10n-ca.install; \
+		rm -f debian/libreoffice-l10n-ca-valencia.dirs debian/libreoffice-l10n-ca-valencia.install; \
+	fi
+endif
+ifeq (ca-valencia,$(findstring ca-valencia,$(HELPISOS)))
+	if [ -f debian/libreoffice-help-ca-valencia.dirs -a -f debian/libreoffice-help-ca-valencia.install ]; then \
+		cat debian/libreoffice-help-ca-valencia.dirs >> debian/libreoffice-help-ca.dirs; \
+		cat debian/libreoffice-help-ca-valencia.install >> debian/libreoffice-help-ca.install; \
+		rm -f debian/libreoffice-help-ca-valencia.dirs debian/libreoffice-help-ca-valencia.install; \
+	fi
+endif
+
+	# fixup case (-l10n-pt-BR -> l10n-pt-br etc.)
+	for iso in $(ISOS); do \
+		pkgiso=`echo $$iso | tr A-Z a-z`; \
+		if [ "$$iso" != "$$pkgiso" ]; then \
+			if [ "$$iso" != "en-US" -a \
+			  -e debian/libreoffice-l10n-$$iso.dirs -a \
+			  -e debian/libreoffice-l10n-$$iso.install ]; then \
+				mv debian/libreoffice-l10n-$$iso.dirs \
+					debian/libreoffice-l10n-$$pkgiso.dirs; \
+				mv debian/libreoffice-l10n-$$iso.install \
+					debian/libreoffice-l10n-$$pkgiso.install; \
+			fi; \
+			if [ -e debian/libreoffice-help-$$iso.dirs -a \
+			  -e debian/libreoffice-help-$$iso.install ]; then \
+				mv debian/libreoffice-help-$$iso.dirs \
+					debian/libreoffice-help-$$pkgiso.dirs; \
+				mv debian/libreoffice-help-$$iso.install \
+					debian/libreoffice-help-$$pkgiso.install; \
+			fi; \
+		fi; \
+	done
+	for i in $(ARCH_INDEP_PACKAGES); do \
+		if [ -e debian/$$i.bug-script.in ]; then \
+			cat debian/$$i.bug-script.in \
+				> debian/$$i.bug-script; \
+		fi ;\
+	done
+	# generate .links files from *.in	
+	for PKG in $(ARCH_INDEP_PACKAGES); do \
+	  LINKS=debian/$$PKG.links ; \
+	  if [ -e $$LINKS.in ]; then \
+	    sed -e "s#\@OODIR\@#$(OODIR)#g" \
+		< $$LINKS.in > $$LINKS ; \
+	  fi; \
+	done
+	for PKG in $(ARCH_INDEP_PACKAGES); do \
+		cat debian/changelog \
+		| sed -e '/^openoffice/,$$d' \
+		> debian/$$PKG.changelog; \
+	done
+ifeq (sk,$(findstring sk,$(HELPISOS)))
+	# add fake sk help
+	mkdir -p $(PKGDIR)-help-sk/$(shell echo $(OODIR) | sed -e s/lib/share/)/help
+	ln -s cs \
+		$(PKGDIR)-help-sk/$(shell echo $(OODIR) | sed -e s/lib/share/)/help/sk
+endif
+	find debian/tmp ! -perm -200 | xargs -r chmod u+w
+	touch $@
+
+binary-indep: $(STAMP_DIR)/binary-indep
+$(STAMP_DIR)/binary-indep: $(STAMP_DIR)/install-indep debian/control
+	dh_testdir
+	dh_testroot
+	# remove empty uno_packages dirs somehow in the langpacks(?)
+	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
+		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/share/uno_packages; \
+	done
+
+	# remove ooo dirs somehow in the langpacks(?)
+	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
+		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/share/dict/ooo; \
+	done
+
+	# remove extra license files
+	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
+		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/licenses; \
+		rm -f $(PKGDIR)-l10n-$$iso/$(OODIR)/share/readme/LICENSE*; \
+	done
+
+	# remove extra readme files
+	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
+		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/readmes; \
+		rm -f $(PKGDIR)-l10n-$$iso/$(OODIR)/share/readme/README*; \
+	done
+
+	# remove empty help directories
+	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
+		rm -rf $(PKGDIR)-l10n-$$iso/$(shell echo $(OODIR) | sed -e s/lib/share/)/help; \
+		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/help; \
+	done
+
+	# install technical.dic
+	for iso in $(LANGPACKISOS); do \
+		elif [ "$$iso" = "ca-valencia" ]; then pkg=l10n-ca; else pkg=l10n-`echo $$iso | tr A-Z a-z`; \
+		fi; \
+		mkdir -p $(PKGDIR)-$$pkg/$(OODIR)/share/wordbook/$$iso; \
+		install -m644 $(SOURCE_TREE)/extras/source/wordbook/technical.dic \
+			$(PKGDIR)-$$pkg/$(OODIR)/share/wordbook/$$iso/technical.dic; \
+	done
+
+ifeq "$(DEB_VENDOR)" "Debian"
+	# install Debian presentation template
+	otps=`cd debian/templates; echo *.otp`; \
+	for iso in $(LANGPACKISOS); do \
+	  [ "$$iso" = "en-US" ] && continue; \
+	  pkgiso=`echo $$iso | tr \[:upper:\] \[:lower:\]`; \
+	  [ "$$pkgiso" = "ca-xv" ] && pkgiso=ca; \
+	  mkdir -p $(PKGDIR)-l10n-$$pkgiso/$(OODIR)/share/template/$$iso/presnt; \
+	  for otp in $$otps; do \
+	    ln -sf ../../en-US/presnt/$$otp \
+	    $(PKGDIR)-l10n-$$pkgiso/$(OODIR)/share/template/$$iso/presnt/$$odt; \
+	  done; \
+	done
+endif
+
+ifeq (he,$(findstring he,$(LANGPACKISOS)))
+	perl -pi -e 's#<prop oor:name="CTLSequenceChecking"><value>true</value></prop>#<prop oor:name="CTLSequenceChecking"><value>false</value></prop>#' $(PKGDIR)-l10n-he/$(OODIR)/share/registry/ctl_he.xcd
+endif
+	for pkg in $(ARCH_INDEP_PACKAGES) ; do \
+	  rm -f debian/$$pkg.*.debhelper;\
+	  rm -rf debian/$$pkg/DEBIAN;\
+	done
+
+	dh_installdocs -i -A 
+	for p in $(ARCH_INDEP_PACKAGES); do \
+		mkdir -p debian/$$p/usr/share/doc/$$p; \
+		cp workdir/CustomTarget/readlicense_oo/readme/README_en-US \
+			debian/$$p/usr/share/doc/$$p/README; \
+	done 
+	dh_installman -i
+	dh_installchangelogs -i -Nlibreoffice-librelogo -k
+	dh_installmime -i
+	dh_lintian -i
+	dh_bugfiles -i -A
+	dh_link -i -X.desktop
+	dh_fixperms -i
+	dh_icons -i
+	dh_installxmlcatalogs -i
+	dh_compress -i -X.py -X.mk -X.sxd -X.xcd.sample
+	dh_installdeb -i
+	dh_gencontrol -i $(DEBHELPER_OPTIONS) \
+		-V'base-version=$(BASE_VERSION)' \
+		-V'oover=$(OOVER)' \
+		-V'next-oover=$(NEXT_OOVER)' \
+		-V'help-l10n-virtual-version=$(HELP_L10N_VIRTUAL_VERSION)' \
+		-V'Binary-Version=$(BINARY_VERSION)' \
+		-v$(BINARY_VERSION)
+	dh_md5sums -i
+	dh_builddeb -i $(DEBHELPER_OPTIONS) $(BUILDDEB_OPTIONS)
+	touch $@
+
+build: build-indep
+	true
+build-arch install-arch binary-arch check:
+	true
+binary: binary-indep
+	true
+install: install-indep
+	true
+
+.PHONY: control clean prepare
+.PHONY: build build-arch build-indep
+.PHONY: install install-arch install-indep
+
+# vim:set noet ai sts=8 sw=8 tw=0:
