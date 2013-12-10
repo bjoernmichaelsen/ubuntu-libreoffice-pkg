@@ -3547,7 +3547,7 @@ update-l10n:
 			>> debian/debian-l10n/control;)
 	cp ./debian/compat ./debian/debian-l10n/compat
 	$(foreach debdir,patches branding,\
-        cp -a ./debian/$(debdir) ./debian/debian-l10n/debdir)
+        cp -a ./debian/$(debdir) ./debian/debian-l10n/$(debdir))
 	mkdir ./debian/debian-l10n/source/ && \
 		cp ./debian/source/format ./debian/debian-l10n/source/format
 
