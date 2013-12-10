@@ -3546,7 +3546,7 @@ update-l10n:
 			< debian/debian-l10n/control.lang.in \
 			>> debian/debian-l10n/control;)
 	cp ./debian/compat ./debian/debian-l10n/compat
-    cp -a ./debian/patches ./debian/debian-l10n/patches
+	cp -a ./debian/patches ./debian/debian-l10n/patches
 	mkdir ./debian/debian-l10n/source/ && \
 		cp ./debian/source/format ./debian/debian-l10n/source/format
 
