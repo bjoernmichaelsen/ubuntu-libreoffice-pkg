@@ -65,9 +65,6 @@ build-indep: $(STAMP_DIR)/prepare $(STAMP_DIR)/build-indep
 $(STAMP_DIR)/build-indep:
 	dh_testdir
 	PATH=$(BUILD_PATH) LD_LIBRARY_PATH=$(BUILD_LD_LIBRARY_PATH) \
-	PYTHON=$(PYTHON) PYTHON_CFLAGS="$(shell pkg-config --cflags python-$(PYMAJOR).$(PYMINOR))" PYTHON_LIBS="$(shell pkg-config --libs python-$(PYMAJOR).$(PYMINOR))" \
-	MARIADBCONFIG=$(MARIADBCONFIG) \
-	FIREBIRD_CFLAGS=$(FIREBIRD_CFLAGS) FIREBIRD_LIBS=$(FIREBIRD_LIBS) \
 	./autogen.sh $(CONFIGURE_FLAGS) --with-help $(CONFIGURE_FLAGS_LANG)
 	PATH=$(BUILD_PATH) LD_LIBRARY_PATH=$(BUILD_LD_LIBRARY_PATH) TMP=`mktemp -q -d` $(MAKE) build-l10n-only
 	touch $@
