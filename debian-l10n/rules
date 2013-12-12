@@ -1,6 +1,7 @@
 #!/usr/bin/make -f
 CURDIR ?= $(realpath $(dir $(firstword $(MAKEFILE_LIST)))/..)
 include $(CURDIR)/debian/config
+DEB_VERSION:=$(shell head -1 $(CURDIR)/debian/changelog | tr \(\) :: |cut -f3 -d:)
 BASE_VERSION:=$(shell echo $(DEB_VERSION) | cut -d: -f1):$(DEB_VERSION_UPSTREAM)
 BINARY_VERSION=$(DEB_VERSION)
 HELP_L10N_VIRTUAL_VERSION:=4.1
@@ -229,7 +230,6 @@ endif
 		-V'oover=$(OOVER)' \
 		-V'next-oover=$(NEXT_OOVER)' \
 		-V'help-l10n-virtual-version=$(HELP_L10N_VIRTUAL_VERSION)' \
-		-V'Binary-Version=$(BINARY_VERSION)' \
 		-v$(BINARY_VERSION)
 	dh_md5sums -i
 	dh_builddeb -i $(DEBHELPER_OPTIONS) $(BUILDDEB_OPTIONS)
