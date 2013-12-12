@@ -3527,7 +3527,7 @@ update-l10n:
 	dh_testdir
 	sed -e 's,@BUILD_DEPS@,$(call sed-escape,$(BUILD_DEPS)),' \
 	    -e 's,@BUILD_DEPS_INDEP@,$(call sed-escape,$(BUILD_DEPS_INDEP)),' \
-	    -e 's,@CONFIGURE_FLAGS@,$(call sed-escape,$(CONFIGURE_FLAGS)),' \
+	    -e 's,@CONFIGURE_FLAGS@,$(call sed-escape,$(filter-out --enable-mergelibs(CONFIGURE_FLAGS))),' \
 	    -e 's,@CONFIGURE_FLAGS_LANG@,$(call sed-escape,$(CONFIGURE_FLAGS_LANG)),' \
 	    -e 's,@LANGPACKISOS@,$(call sed-escape,$(LANGPACKISOS)),' \
 	    -e 's,@ISOS@,$(call sed-escape,$(ISOS)),' \
