@@ -225,7 +225,7 @@ endif
 	dh_installxmlcatalogs -i
 	dh_compress -i -X.py -X.mk -X.sxd -X.xcd.sample
 	dh_installdeb -i
-	dh_gencontrol -i $(DEBHELPER_OPTIONS) \
+	dh_gencontrol -i $(DEBHELPER_OPTIONS) -- \
 		-V'base-version=$(BASE_VERSION)' \
 		-V'oover=$(OOVER)' \
 		-V'next-oover=$(NEXT_OOVER)' \
