@@ -143,7 +143,6 @@ ifeq (sk,$(findstring sk,$(HELPISOS)))
 	ln -s cs \
 		$(PKGDIR)-help-sk/$(shell echo $(OODIR) | sed -e s/lib/share/)/help/sk
 endif
-	find debian/tmp ! -perm -200 | xargs -r chmod u+w
 	touch $@
 
 binary-indep: $(STAMP_DIR)/binary-indep
@@ -180,8 +179,6 @@ $(STAMP_DIR)/binary-indep: $(STAMP_DIR)/install-indep
 
 	# install technical.dic
 	for iso in $(LANGPACKISOS); do \
-		elif [ "$$iso" = "ca-valencia" ]; then pkg=l10n-ca; else pkg=l10n-`echo $$iso | tr A-Z a-z`; \
-		fi; \
 		mkdir -p $(PKGDIR)-$$pkg/$(OODIR)/share/wordbook/$$iso; \
 		install -m644 $(SOURCE_TREE)/extras/source/wordbook/technical.dic \
 			$(PKGDIR)-$$pkg/$(OODIR)/share/wordbook/$$iso/technical.dic; \
