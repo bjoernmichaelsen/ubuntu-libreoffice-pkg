@@ -33,3 +33,4 @@ libmerged-needs-libeot.diff
 l10n-and-non-l10n-targets.diff
 install-package-foo.diff
 uiconfig-is-l10n.diff
+registry-is-l10n.diff

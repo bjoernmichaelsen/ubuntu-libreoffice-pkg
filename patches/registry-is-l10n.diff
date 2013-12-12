@@ -1,0 +1,17 @@
+diff --git a/postprocess/Module_postprocess.mk b/postprocess/Module_postprocess.mk
+index 9ed1a75..d3d5a95 100644
+--- a/postprocess/Module_postprocess.mk
++++ b/postprocess/Module_postprocess.mk
+@@ -16,9 +16,11 @@ $(eval $(call gb_Module_add_targets,postprocess,\
+ 	CustomTarget_images \
+ 	CustomTarget_registry \
+ 	Package_images \
+-	Package_registry \
+ 	Rdb_services \
+ ))
++$(eval $(call gb_Module_add_l10n_targets,postprocess,\
++	Package_registry \
++))
+ 
+ ifeq ($(WINDOWS_BUILD_SIGNING),TRUE)
+ $(eval $(call gb_Module_add_targets,postprocess,\
