@@ -76,9 +76,9 @@ $(STAMP_DIR)/install-indep:
 	dh_testdir
 	dh_testroot
 	rm -rf $(PKGDIR)-help-* $(PKGDIR)-l10n-*
-	$(foreach iso,$(LANGPACKISOS),\
+	$(foreach iso,$(filter-out en-US,$(LANGPACKISOS)),\
 		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-$(iso)/$(OODIR) &&) true
-	$(foreach iso,$(HELPISOS),\
+	$(foreach iso,$(filter-out en-US,$(HELPISOS)),\
 		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-$(iso)/$(OODIR) &&) true
 	
 	# and ca-valencia in -ca...
