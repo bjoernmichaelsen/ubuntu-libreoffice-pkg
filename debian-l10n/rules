@@ -1,7 +1,14 @@
 #!/usr/bin/make -f
 CURDIR ?= $(realpath $(dir $(firstword $(MAKEFILE_LIST)))/..)
 include $(CURDIR)/debian/config
-include /usr/share/dpkg/dpkg-info.mk
+#dpkg-info
+dpkg_late_eval ?= $(or $(value DPKG_CACHE_$(1)),$(eval DPKG_CACHE_$(1) := $(shell $(2)))$(value DPKG_CACHE_$(1)))
+DEB_SOURCE = $(call dpkg_late_eval,DEB_SOURCE,awk '/^Source: / { print $$2 }' debian/control)
+DEB_VERSION = $(call dpkg_late_eval,DEB_VERSION,dpkg-parsechangelog | awk '/^Version: / { print $$2 }')
+DEB_VERSION_EPOCH_UPSTREAM = $(call dpkg_late_eval,DEB_VERSION_EPOCH_UPSTREAM,echo '$(DEB_VERSION)' | sed -e 's/-[^-]*$$//')
+DEB_VERSION_UPSTREAM_REVISION = $(call dpkg_late_eval,DEB_VERSION_UPSTREAM_REVISION,echo '$(DEB_VERSION)' | sed -e 's/^[0-9]*://')
+DEB_VERSION_UPSTREAM = $(call dpkg_late_eval,DEB_VERSION_UPSTREAM,echo '$(DEB_VERSION_EPOCH_UPSTREAM)' | sed -e 's/^[0-9]*://')
+DEB_DISTRIBUTION = $(call dpkg_late_eval,DEB_DISTRIBUTION,dpkg-parsechangelog | sed -n -e 's/^Distribution: //p')
 BASE_VERSION:=$(shell echo $(DEB_VERSION) | cut -d: -f1):$(DEB_VERSION_UPSTREAM)
 BINARY_VERSION=$(DEB_VERSION)
 HELP_L10N_VIRTUAL_VERSION:=4.1
