@@ -6,8 +6,8 @@ index 92d3553..5da59c9 100644
  
  endif
  
--$(eval $(call gb_Module_add_l10n_targets,basctl,\
-+$(eval $(call gb_Module_add_targets,basctl,\
++$(eval $(call gb_Module_add_l10n_targets,basctl,\
+-$(eval $(call gb_Module_add_targets,basctl,\
  	UIConfig_basicide \
  ))
  
@@ -19,12 +19,12 @@ index a7751e9..49a8c51 100644
  $(eval $(call gb_Module_add_targets,chart2,\
      Library_chartcontroller \
      Library_chartcore \
-+	UIConfig_chart2 \
+-	UIConfig_chart2 \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,chart2,\
      AllLangResTarget_chartcontroller \
--	UIConfig_chart2 \
++	UIConfig_chart2 \
  ))
  
  $(eval $(call gb_Module_add_slowcheck_targets,chart2,\
@@ -36,12 +36,12 @@ index 2a2fca4..62398b3 100644
  
  $(eval $(call gb_Module_add_targets,cui,\
  	Library_cui \
-+	UIConfig_cui \
+-	UIConfig_cui \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,cui,\
  	AllLangResTarget_cui \
--	UIConfig_cui \
++	UIConfig_cui \
  ))
  
  # vim: set noet sw=4 ts=4:
@@ -49,31 +49,31 @@ diff --git a/dbaccess/Module_dbaccess.mk b/dbaccess/Module_dbaccess.mk
 index b9d7d56..5c05968 100644
 --- a/dbaccess/Module_dbaccess.mk
 +++ b/dbaccess/Module_dbaccess.mk
-@@ -18,13 +18,6 @@ $(eval $(call gb_Module_add_targets,dbaccess,\
+@@ -18,6 +18,13 @@ $(eval $(call gb_Module_add_targets,dbaccess,\
  	Library_dbmm \
  	Library_dbu \
  	Library_sdbt \
--))
--
--$(eval $(call gb_Module_add_l10n_targets,dbaccess,\
--    AllLangResTarget_dba \
--    AllLangResTarget_dbmm \
--    AllLangResTarget_dbu \
--    AllLangResTarget_sdbt \
- 	UIConfig_dbaccess \
- 	UIConfig_dbapp \
- 	UIConfig_dbbrowser \
-@@ -34,6 +27,13 @@ $(eval $(call gb_Module_add_l10n_targets,dbaccess,\
- 	UIConfig_dbtdata \
- ))
- 
++))
++
 +$(eval $(call gb_Module_add_l10n_targets,dbaccess,\
 +    AllLangResTarget_dba \
 +    AllLangResTarget_dbmm \
 +    AllLangResTarget_dbu \
 +    AllLangResTarget_sdbt \
-+))
-+
+ 	UIConfig_dbaccess \
+ 	UIConfig_dbapp \
+ 	UIConfig_dbbrowser \
+@@ -27,13 +34,6 @@ $(eval $(call gb_Module_add_l10n_targets,dbaccess,\
+ 	UIConfig_dbtdata \
+ ))
+ 
+-$(eval $(call gb_Module_add_l10n_targets,dbaccess,\
+-    AllLangResTarget_dba \
+-    AllLangResTarget_dbmm \
+-    AllLangResTarget_dbu \
+-    AllLangResTarget_sdbt \
+-))
+-
  ifeq ($(ENABLE_FIREBIRD_SDBC),TRUE)
  $(eval $(call gb_Module_add_check_targets,dbaccess,\
      CppunitTest_dbaccess_firebird_test \
@@ -85,14 +85,14 @@ index ed9e4d9..c90de67 100644
      $(if $(ENABLE_HEADLESS),,Library_spl) \
      Package_branding \
      $(if $(CUSTOM_BRAND_DIR),Package_branding_custom) \
-+    UIConfig_deployment \
+-    UIConfig_deployment \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,desktop,\
      AllLangResTarget_deployment \
      AllLangResTarget_deploymentgui \
      AllLangResTarget_dkt \
--    UIConfig_deployment \
++    UIConfig_deployment \
  ))
  
  ifeq ($(OS),LINUX)
@@ -104,15 +104,15 @@ index 4761bba..4f30191 100644
  	Library_bib \
  	Library_dbp \
  	Library_pcr \
-+	UIConfig_sbibliography \
-+	UIConfig_spropctrlr \
+-	UIConfig_sbibliography \
+-	UIConfig_spropctrlr \
  ))
  $(eval $(call gb_Module_add_l10n_targets,extensions,\
  	AllLangResTarget_bib \
  	AllLangResTarget_dbp \
  	AllLangResTarget_pcr \
--	UIConfig_sbibliography \
--	UIConfig_spropctrlr \
++	UIConfig_sbibliography \
++	UIConfig_spropctrlr \
  ))
  endif
  
@@ -124,7 +124,7 @@ index 403184a..acff4f8 100644
  	Package_docbook \
  	Package_xhtml \
  	Package_xslt \
-+	UIConfig_xsltdlg \
+-	UIConfig_xsltdlg \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,filter,\
@@ -132,7 +132,7 @@ index 403184a..acff4f8 100644
  	AllLangResTarget_pdffilter \
  	AllLangResTarget_t602filter \
  	AllLangResTarget_xsltdlg \
--	UIConfig_xsltdlg \
++	UIConfig_xsltdlg \
  ))
  
  ifneq (,$(filter DESKTOP,$(BUILD_TYPE)))
@@ -144,12 +144,12 @@ index 2e6d5b7..b597d34 100644
      Library_fwl \
      Library_fwm \
      Package_dtd \
-+    UIConfig_startmodule \
+-    UIConfig_startmodule \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,framework,\
      AllLangResTarget_fwe \
--    UIConfig_startmodule \
++    UIConfig_startmodule \
  ))
  
  ifneq ($(OOO_JUNIT_JAR),)
@@ -161,12 +161,12 @@ index 45db7aa..12f3f4c 100644
      Executable_spadmin.bin \
      Library_spa \
      Package_padmin \
-+    UIConfig_spa \
+-    UIConfig_spa \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,padmin,\
      AllLangResTarget_spa \
--    UIConfig_spa \
++    UIConfig_spa \
  ))
  
  endif
@@ -178,28 +178,16 @@ index bba86b9..620fbbf 100644
      Library_rpt \
      Library_rptui \
      Library_rptxml \
-+    UIConfig_dbreport \
+-    UIConfig_dbreport \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,reportdesign,\
      AllLangResTarget_rpt \
      AllLangResTarget_rptui \
--    UIConfig_dbreport \
++    UIConfig_dbreport \
  ))
  
  # deactivated since sb123;
-diff --git a/reportdesign/UIConfig_dbreport.mk b/reportdesign/UIConfig_dbreport.mk
-index 8c3b709..e8c6904 100644
---- a/reportdesign/UIConfig_dbreport.mk
-+++ b/reportdesign/UIConfig_dbreport.mk
-@@ -7,7 +7,6 @@
- # file, You can obtain one at http://mozilla.org/MPL/2.0/.
- #
- 
--$(info foo!)
- $(eval $(call gb_UIConfig_UIConfig,modules/dbreport))
- 
- $(eval $(call gb_UIConfig_add_menubarfiles,modules/dbreport,\
 diff --git a/sc/Module_sc.mk b/sc/Module_sc.mk
 index 6730163..cc974a0 100644
 --- a/sc/Module_sc.mk
@@ -208,12 +196,12 @@ index 6730163..cc974a0 100644
  	Library_scd \
  	Library_scfilt \
  	Library_scui \
-+	UIConfig_scalc \
+-	UIConfig_scalc \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,sc,\
  	AllLangResTarget_sc \
--	UIConfig_scalc \
++	UIConfig_scalc \
  ))
  
  ifneq (,$(ENABLE_OPENCL))
@@ -225,14 +213,14 @@ index 3321279..16e7772 100644
      Package_opengl \
      Package_web \
      Package_xml \
-+    UIConfig_sdraw \
-+    UIConfig_simpress \
+-    UIConfig_sdraw \
+-    UIConfig_simpress \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,sd,\
      AllLangResTarget_sd \
--    UIConfig_sdraw \
--    UIConfig_simpress \
++    UIConfig_sdraw \
++    UIConfig_simpress \
  ))
  
  ifneq ($(OS),DRAGONFLY)
@@ -244,12 +232,12 @@ index be82c7c..1164ca4 100644
  
  $(eval $(call gb_Module_add_targets,sfx2,\
      Library_sfx \
-+    UIConfig_sfx \
+-    UIConfig_sfx \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,sfx2,\
      AllLangResTarget_sfx2 \
--    UIConfig_sfx \
++    UIConfig_sfx \
  ))
  
  $(eval $(call gb_Module_add_check_targets,sfx2,\
@@ -261,8 +249,8 @@ index ee1cb46..dd35658 100644
  endef
  
  define gb_Module_add_target
--$(if $(filter AllLang% Dictionary% UIConfig%,$(2)),$(warning target $(2) should be a l10n target))
-+$(if $(filter AllLang% Dictionary%,$(2)),$(warning target $(2) should be a l10n target))
++$(if $(filter AllLang% Dictionary% UIConfig%,$(2)),$(warning target $(2) should be a l10n target))
+-$(if $(filter AllLang% Dictionary%,$(2)),$(warning target $(2) should be a l10n target))
  $(call gb_Module__read_targetfile,$(1),$(2),target)
  
  $(call gb_Module_get_nonl10n_target,$(1)) : $$(gb_Module_CURRENTTARGET)
@@ -270,8 +258,8 @@ index ee1cb46..dd35658 100644
  endef
  
  define gb_Module_add_l10n_target
--$(if $(filter AllLang% Dictionary% UIConfig%,$(2)),,$(warning target $(2) should not be a l10n target))
-+$(if $(filter AllLang% Dictionary%,$(2)),,$(warning target $(2) should not be a l10n target))
++$(if $(filter AllLang% Dictionary% UIConfig%,$(2)),,$(warning target $(2) should not be a l10n target))
+-$(if $(filter AllLang% Dictionary%,$(2)),,$(warning target $(2) should not be a l10n target))
  $(call gb_Module__read_targetfile,$(1),$(2),target)
  
  $(call gb_Module_get_l10n_target,$(1)) : $$(gb_Module_CURRENTTARGET)
@@ -283,12 +271,12 @@ index 2830a46..bd434dd 100644
  $(eval $(call gb_Module_add_targets,starmath,\
      Library_sm \
      Library_smd \
-+    UIConfig_smath \
+-    UIConfig_smath \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,starmath,\
      AllLangResTarget_sm \
--    UIConfig_smath \
++    UIConfig_smath \
  ))
  
  $(eval $(call gb_Module_add_check_targets,starmath,\
@@ -300,12 +288,12 @@ index f96a758..e2a3512 100644
  $(eval $(call gb_Module_add_targets,svtools,\
      Library_hatchwindowfactory \
      Library_svt \
-+    UIConfig_svt \
+-    UIConfig_svt \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,svtools,\
      AllLangResTarget_svt \
--    UIConfig_svt \
++    UIConfig_svt \
  ))
  
  ifneq ($(CROSS_COMPILING),YES)
@@ -317,7 +305,7 @@ index 80f2bd7..071e36f 100644
      Library_svx \
      Library_svxcore \
      Library_textconversiondlgs \
-+    UIConfig_svx \
+-    UIConfig_svx \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,svx,\
@@ -325,7 +313,7 @@ index 80f2bd7..071e36f 100644
      AllLangResTarget_ofa \
      AllLangResTarget_gal \
      AllLangResTarget_textconversiondlgs \
--    UIConfig_svx \
++    UIConfig_svx \
  ))
  
  ifneq (,$(filter DESKTOP,$(BUILD_TYPE)))
@@ -333,25 +321,25 @@ diff --git a/sw/Module_sw.mk b/sw/Module_sw.mk
 index d5d3f44..2e35087 100644
 --- a/sw/Module_sw.mk
 +++ b/sw/Module_sw.mk
-@@ -26,10 +26,6 @@ $(eval $(call gb_Module_add_targets,sw,\
+@@ -26,6 +26,10 @@ $(eval $(call gb_Module_add_targets,sw,\
  	Library_sw \
  	Library_swd \
  	Library_swui \
--))
--
--$(eval $(call gb_Module_add_l10n_targets,sw,\
--    AllLangResTarget_sw \
++))
++
++$(eval $(call gb_Module_add_l10n_targets,sw,\
++    AllLangResTarget_sw \
  	UIConfig_sglobal \
  	UIConfig_sweb \
  	UIConfig_swform \
-@@ -39,6 +35,10 @@ $(eval $(call gb_Module_add_l10n_targets,sw,\
+@@ -35,10 +39,6 @@ $(eval $(call gb_Module_add_l10n_targets,sw,\
  	UIConfig_qa \
  ))
  
-+$(eval $(call gb_Module_add_l10n_targets,sw,\
-+    AllLangResTarget_sw \
-+))
-+
+-$(eval $(call gb_Module_add_l10n_targets,sw,\
+-    AllLangResTarget_sw \
+-))
+-
  ifneq ($(DISABLE_SCRIPTING),TRUE)
  
  $(eval $(call gb_Module_add_targets,sw,\
@@ -363,12 +351,12 @@ index 193bea5..c827e41 100644
  
  $(eval $(call gb_Module_add_targets,uui,\
  	Library_uui \
-+	UIConfig_uui \
+-	UIConfig_uui \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,uui,\
  	AllLangResTarget_uui \
--	UIConfig_uui \
++	UIConfig_uui \
  ))
  
  # vim: set noet sw=4 ts=4:
@@ -380,12 +368,12 @@ index 4dc6434..a65736d 100644
      $(if $(filter DESKTOP,$(BUILD_TYPE)), \
  		StaticLibrary_vclmain \
  		Executable_ui-previewer) \
-+    UIConfig_vcl \
+-    UIConfig_vcl \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,vcl,\
      AllLangResTarget_vcl \
--    UIConfig_vcl \
++    UIConfig_vcl \
  ))
  
  ifeq ($(GUIBASE),unx)
@@ -397,12 +385,12 @@ index e88859d..d29444c 100644
  	Library_xmlsecurity \
  	Library_xsec_fw \
  	$(if $(filter-out IOS ANDROID,$(OS)),Library_xsec_xmlsec) \
-+	UIConfig_xmlsec \
+-	UIConfig_xmlsec \
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,xmlsecurity,\
  	AllLangResTarget_xsec \
--	UIConfig_xmlsec \
++	UIConfig_xmlsec \
  ))
  
  #FIXME: ^^^, get nss&libxmlsec building on ios and android
