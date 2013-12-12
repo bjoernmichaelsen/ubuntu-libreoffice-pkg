@@ -120,7 +120,7 @@ diff --git a/filter/Module_filter.mk b/filter/Module_filter.mk
 index 403184a..acff4f8 100644
 --- a/filter/Module_filter.mk
 +++ b/filter/Module_filter.mk
-@@ -61,6 +61,7 @@ $(eval $(call gb_Module_add_targets,filter,\
+@@ -61,7 +61,6 @@ $(eval $(call gb_Module_add_targets,filter,\
  	Package_docbook \
  	Package_xhtml \
  	Package_xslt \
@@ -128,7 +128,7 @@ index 403184a..acff4f8 100644
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,filter,\
-@@ -68,7 +69,6 @@ $(eval $(call gb_Module_add_l10n_targets,filter,\
+@@ -69,6 +68,7 @@ $(eval $(call gb_Module_add_l10n_targets,filter,\
  	AllLangResTarget_pdffilter \
  	AllLangResTarget_t602filter \
  	AllLangResTarget_xsltdlg \
