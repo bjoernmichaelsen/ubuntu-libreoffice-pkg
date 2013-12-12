@@ -73,11 +73,11 @@ install-indep: $(STAMP_DIR)/install-indep
 $(STAMP_DIR)/install-indep:
 	dh_testdir
 	dh_testroot
-	if [ -x /usr/bin/dh_prep ]; then dh_prep; else dh_clean -k; fi
-	rm -f debian/*.install debian/*.dirs
-	cd $(CURDIR)/debian/tmp/pkg && rm -rf \*
-	cp -la $(SOURCE_TREE)/instdir/ $(CURDIR)/debian/tmp
-	find $(CURDIR)/debian/tmp -name '*.so' | xargs rm
+	rm -rf $(PKGDIR)-help-* $(PKGDIR)-l10n-*
+	$(foreach iso,$(LANGPACKISOS),\
+		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-$(iso)/$(OODIR) &&) true
+	$(foreach iso,$(HELPISOS),\
+		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-$(iso)/$(OODIR) &&) true
 	
 	# and ca-valencia in -ca...
 ifeq (ca-valencia,$(findstring ca-valencia,$(LANGPACKISOS)))
