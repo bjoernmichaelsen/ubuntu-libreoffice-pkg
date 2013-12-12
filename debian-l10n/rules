@@ -68,7 +68,7 @@ $(STAMP_DIR)/build-indep:
 	./autogen.sh $(CONFIGURE_FLAGS) --with-help $(CONFIGURE_FLAGS_LANG)
 	PATH=$(BUILD_PATH) LD_LIBRARY_PATH=$(BUILD_LD_LIBRARY_PATH) TMP=`mktemp -q -d` \
 		$(MAKE) build-l10n-only && \
-		$(MAKE) cmd cmd='make -f Makefile.gbuild ${WORKDIR}/CustomTarget/readlicense_oo/readme/README_en-US'
+		$(MAKE) cmd cmd='make -f Makefile.gbuild $${WORKDIR}/CustomTarget/readlicense_oo/readme/README_en-US'
 	touch $@
 
 install-indep: $(STAMP_DIR)/install-indep
