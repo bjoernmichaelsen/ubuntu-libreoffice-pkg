@@ -309,7 +309,7 @@ index 80f2bd7..071e36f 100644
  ))
  
  $(eval $(call gb_Module_add_l10n_targets,svx,\
-@@ -30,7 +31,6 @@ $(eval $(call gb_Module_add_l10n_targets,svx,\
+@@ -31,6 +30,7 @@ $(eval $(call gb_Module_add_l10n_targets,svx,\
      AllLangResTarget_ofa \
      AllLangResTarget_gal \
      AllLangResTarget_textconversiondlgs \
