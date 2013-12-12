@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 CURDIR ?= $(realpath $(dir $(firstword $(MAKEFILE_LIST)))/..)
 include $(CURDIR)/debian/config
-DEB_VERSION:=$(shell head -1 $(CURDIR)/debian/changelog | tr \(\)- ,,, |cut -f3 -d,)
+include /usr/share/dpkg/dpkg-info.mk
 BASE_VERSION:=$(shell echo $(DEB_VERSION) | cut -d: -f1):$(DEB_VERSION_UPSTREAM)
 BINARY_VERSION=$(DEB_VERSION)
 HELP_L10N_VIRTUAL_VERSION:=4.1
