@@ -301,7 +301,7 @@ diff --git a/svx/Module_svx.mk b/svx/Module_svx.mk
 index 80f2bd7..071e36f 100644
 --- a/svx/Module_svx.mk
 +++ b/svx/Module_svx.mk
-@@ -23,6 +23,7 @@ $(eval $(call gb_Module_add_targets,svx,\
+@@ -23,7 +23,6 @@ $(eval $(call gb_Module_add_targets,svx,\
      Library_svx \
      Library_svxcore \
      Library_textconversiondlgs \
