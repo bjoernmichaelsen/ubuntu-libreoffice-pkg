@@ -145,7 +145,7 @@ endif
 	touch $@
 
 binary-indep: $(STAMP_DIR)/binary-indep
-$(STAMP_DIR)/binary-indep: $(STAMP_DIR)/install-indep debian/control
+$(STAMP_DIR)/binary-indep: $(STAMP_DIR)/install-indep
 	dh_testdir
 	dh_testroot
 	# remove empty uno_packages dirs somehow in the langpacks(?)
@@ -245,7 +245,7 @@ binary: binary-indep
 install: install-indep
 	true
 
-.PHONY: control clean prepare
+.PHONY: clean prepare
 .PHONY: build build-arch build-indep
 .PHONY: install install-arch install-indep
 
