@@ -16,8 +16,6 @@ OOVER:=4.2
 NEXT_OOVER:=$(shell echo "$(OOVER) + 0.1" | bc)
 
 ARCH_INDEP_PACKAGES := $(shell dh_listpackages -i)
-ARCH_DEP_PACKAGES := $(shell dh_listpackages -s)
-PACKAGES := $(ARCH_INDEP_PACKAGES) $(ARCH_DEP_PACKAGES)
 
 include /usr/share/dpkg/architecture.mk
 include /usr/share/dpkg/vendor.mk
