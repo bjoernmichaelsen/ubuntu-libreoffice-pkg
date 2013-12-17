@@ -221,16 +221,12 @@ endif
 		cp workdir/CustomTarget/readlicense_oo/readme/README_en-US \
 			debian/$$p/usr/share/doc/$$p/README; \
 	done 
-	dh_installman -i
-	dh_installchangelogs -i -Nlibreoffice-librelogo -k
-	dh_installmime -i
+	dh_installchangelogs -i -k
 	dh_lintian -i
 	dh_bugfiles -i -A
-	dh_link -i -X.desktop
 	dh_fixperms -i
 	dh_icons -i
 	dh_installxmlcatalogs -i
-	dh_compress -i -X.py -X.mk -X.sxd -X.xcd.sample
 	dh_installdeb -i
 	dh_gencontrol -i $(DEBHELPER_OPTIONS) -- \
 		-V'base-version=$(BASE_VERSION)' \
