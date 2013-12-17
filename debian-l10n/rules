@@ -22,8 +22,6 @@ include /usr/share/dpkg/vendor.mk
 SHELL:=/bin/bash
 export gb_SHELL:=$(SHELL)
 
-SYSTEM_GCC_VERSION = $(shell gcc --version | sed -n '/^gcc/s/.*\(.\..\)\..$$/\1/p')
-
 PKGDIR:=debian/libreoffice
 OODIRNAME=libreoffice
 OODIR:=usr/lib/$(OODIRNAME)
