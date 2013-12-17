@@ -85,9 +85,9 @@ $(STAMP_DIR)/install-indep:
 	dh_testroot
 	rm -rf $(PKGDIR)-help-* $(PKGDIR)-l10n-*
 	$(foreach iso,$(filter-out en-US,$(LANGPACKISOS)),\
-		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-$(iso)/$(OODIR) &&) true
+		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	$(foreach iso,$(filter-out en-US,$(HELPISOS)),\
-		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-$(iso)/$(OODIR) &&) true
+		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	
 	# and ca-valencia in -ca...
 ifeq (ca-valencia,$(findstring ca-valencia,$(LANGPACKISOS)))
