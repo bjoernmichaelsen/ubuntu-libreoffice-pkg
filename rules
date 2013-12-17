@@ -3545,11 +3545,11 @@ update-l10n:
 			$(LANGPACKISO) \
 			< debian/debian-l10n/control.lang.in \
 			>> debian/debian-l10n/control;)
-	cp ./debian/compat ./debian/debian-l10n/compat
 	$(foreach debdir,patches branding,\
         cp -a ./debian/$(debdir) ./debian/debian-l10n/$(debdir) && ) true
-	mkdir ./debian/debian-l10n/source/ && \
-		cp ./debian/source/format ./debian/debian-l10n/source/format
+	$(foreach debfile,compat copyright source/format,\
+        mkdir $(dir ./debian/debian-l10n/$(debfile)) && \
+        cp -a ./debian/$(debfile) ./debian/debian-l10n/$(debfile) && ) true
 
 .PHONY: control
 .PHONY: clean-debdir clean-instsetoo clean-objectdirs clean default
