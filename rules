@@ -3548,7 +3548,7 @@ update-l10n:
 	$(foreach debdir,patches branding,\
         cp -a ./debian/$(debdir) ./debian/debian-l10n/$(debdir) && ) true
 	$(foreach debfile,compat copyright source/format,\
-        mkdir $(dir ./debian/debian-l10n/$(debfile)) && \
+        mkdir -p $(dir ./debian/debian-l10n/$(debfile)) && \
         cp -a ./debian/$(debfile) ./debian/debian-l10n/$(debfile) && ) true
 
 .PHONY: control
