@@ -240,7 +240,7 @@ endif
 
 build: build-indep
 	true
-build-arch install-arch binary-arch check:
+check:
 	true
 binary: binary-indep
 	true
@@ -248,7 +248,7 @@ install: install-indep
 	true
 
 .PHONY: clean prepare
-.PHONY: build build-arch build-indep
-.PHONY: install install-arch install-indep
+.PHONY: build build-indep
+.PHONY: install install-indep
 
 # vim:set noet ai sts=8 sw=8 tw=0:
