@@ -3545,6 +3545,11 @@ update-l10n:
 			$(LANGPACKISO) \
 			< debian/debian-l10n/control.lang.in \
 			>> debian/debian-l10n/control;)
+	$(foreach HELPISO,$(filter-out en-US ca-valencia,$(HELPISOS)),\
+		./debian/scripts/create-l10n-control \
+			$(HELPISO) \
+			< debian/debian-l10n/control.help.in \
+			>> debian/debian-l10n/control;)
 	$(foreach debdir,patches branding,\
         cp -a ./debian/$(debdir) ./debian/debian-l10n/$(debdir) && ) true
 	$(foreach debfile,compat copyright source/format,\
