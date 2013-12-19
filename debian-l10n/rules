@@ -218,6 +218,7 @@ endif
 			debian/$$p/usr/share/doc/$$p/README; \
 	done 
 	dh_installchangelogs -i -k
+	dh_compress
 	dh_lintian -i
 	dh_bugfiles -i -A
 	dh_fixperms -i
