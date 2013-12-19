@@ -139,7 +139,7 @@ if __name__ == '__main__':
     isocode = sys.argv[1]
     language_name = iso_to_name[isocode]
     language_name = language_name[0].upper() + language_name[1:]
-    isocode_firstpart = isocode
+    isocode_firstpart = isocode.split('-')[0]
     if isocode in font_suggests:
         font_sug=font_suggests[isocode]
     else:
