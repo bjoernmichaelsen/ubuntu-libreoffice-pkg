@@ -124,33 +124,6 @@ binary-indep: $(STAMP_DIR)/binary-indep
 $(STAMP_DIR)/binary-indep: $(STAMP_DIR)/install-indep
 	dh_testdir
 	dh_testroot
-	# remove empty uno_packages dirs somehow in the langpacks(?)
-	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
-		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/share/uno_packages; \
-	done
-
-	# remove ooo dirs somehow in the langpacks(?)
-	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
-		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/share/dict/ooo; \
-	done
-
-	# remove extra license files
-	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
-		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/licenses; \
-		rm -f $(PKGDIR)-l10n-$$iso/$(OODIR)/share/readme/LICENSE*; \
-	done
-
-	# remove extra readme files
-	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
-		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/readmes; \
-		rm -f $(PKGDIR)-l10n-$$iso/$(OODIR)/share/readme/README*; \
-	done
-
-	# remove empty help directories
-	for iso in `echo $(LANGPACKISOS) | tr A-Z a-z`; do \
-		rm -rf $(PKGDIR)-l10n-$$iso/$(shell echo $(OODIR) | sed -e s/lib/share/)/help; \
-		rm -rf $(PKGDIR)-l10n-$$iso/$(OODIR)/help; \
-	done
 
 	# install technical.dic
 	for iso in $(LANGPACKISOS); do \
