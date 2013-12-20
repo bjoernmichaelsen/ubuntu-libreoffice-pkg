@@ -101,27 +101,6 @@ ifeq (ca-valencia,$(findstring ca-valencia,$(HELPISOS)))
 	fi
 endif
 
-	# fixup case (-l10n-pt-BR -> l10n-pt-br etc.)
-	for iso in $(ISOS); do \
-		pkgiso=`echo $$iso | tr A-Z a-z`; \
-		if [ "$$iso" != "$$pkgiso" ]; then \
-			if [ "$$iso" != "en-US" -a \
-			  -e debian/libreoffice-l10n-$$iso.dirs -a \
-			  -e debian/libreoffice-l10n-$$iso.install ]; then \
-				mv debian/libreoffice-l10n-$$iso.dirs \
-					debian/libreoffice-l10n-$$pkgiso.dirs; \
-				mv debian/libreoffice-l10n-$$iso.install \
-					debian/libreoffice-l10n-$$pkgiso.install; \
-			fi; \
-			if [ -e debian/libreoffice-help-$$iso.dirs -a \
-			  -e debian/libreoffice-help-$$iso.install ]; then \
-				mv debian/libreoffice-help-$$iso.dirs \
-					debian/libreoffice-help-$$pkgiso.dirs; \
-				mv debian/libreoffice-help-$$iso.install \
-					debian/libreoffice-help-$$pkgiso.install; \
-			fi; \
-		fi; \
-	done
 	for i in $(ARCH_INDEP_PACKAGES); do \
 		if [ -e debian/$$i.bug-script.in ]; then \
 			cat debian/$$i.bug-script.in \
