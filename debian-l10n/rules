@@ -154,6 +154,9 @@ $(STAMP_DIR)/binary-indep: $(STAMP_DIR)/install-indep
 
 	# install technical.dic
 	for iso in $(LANGPACKISOS); do \
+		if [ "$$iso" = "en-US" ]; then pkg=common; \
+		elif [ "$$iso" = "ca-valencia" ]; then pkg=l10n-ca; else pkg=l10n-`echo $$iso | tr A-Z a-z`; \
+		fi; \
 		mkdir -p $(PKGDIR)-$$pkg/$(OODIR)/share/wordbook/$$iso; \
 		install -m644 $(SOURCE_TREE)/extras/source/wordbook/technical.dic \
 			$(PKGDIR)-$$pkg/$(OODIR)/share/wordbook/$$iso/technical.dic; \
