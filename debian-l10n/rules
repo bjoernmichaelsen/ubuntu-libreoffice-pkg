@@ -86,10 +86,10 @@ $(STAMP_DIR)/install-indep:
 		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	
 	# and ca-valencia in -ca...
-ifeq (ca-valencia,$(findstring ca-valencia,$(LANGPACKISOS)))
+ifneq (,$(filter ca-valencia,$(LANGPACKISOS)))
 	make install-package-l10n-ca-valencia INSTALLDIR=$(PKGDIR)-l10n-ca/$(OODIR) &&) true
 endif
-ifeq (ca-valencia,$(findstring ca-valencia,$(HELPISOS)))
+ifneq (,$(filter ca-valencia,$(HELPISOS)))
 	make install-package-help-ca-valencia INSTALLDIR=$(PKGDIR)-help-ca/$(OODIR) &&) true
 endif
 
