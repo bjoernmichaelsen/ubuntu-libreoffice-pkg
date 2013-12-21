@@ -80,20 +80,26 @@ $(STAMP_DIR)/install-indep:
 	dh_testdir
 	dh_testroot
 	rm -rf $(PKGDIR)-help-* $(PKGDIR)-l10n-*
+	$(foreach iso,$(filter-out en-US ca-valencia,$(LANGPACKISOS)),\
+		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
+ifneq (,$(filter ca-valencia,$(LANGPACKISOS)))
+	make install-package-l10n-ca-valencia INSTALLDIR=$(PKGDIR)-l10n-ca/$(OODIR) &&) true
+endif
+ifneq (,$(filter kmr-Latn,$(LANGPACKISOS)))
+	make install-package-l10n-kmr-Latn INSTALLDIR=$(PKGDIR)-l10n-kmr/$(OODIR) &&) true
+endif
 ifneq (,$(filter sk,$(HELPISOS)))
 	# prepopulate sk help from cz
 	make install-package-help-cz INSTALLDIR=$(PKGDIR)-help-sk/$(OODIR)
 endif
-	$(foreach iso,$(filter-out en-US ca-valencia,$(LANGPACKISOS)),\
-		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	$(foreach iso,$(filter-out en-US ca-valencia,$(HELPISOS)),\
 		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	# and ca-valencia in -ca...
-ifneq (,$(filter ca-valencia,$(LANGPACKISOS)))
-	make install-package-l10n-ca-valencia INSTALLDIR=$(PKGDIR)-l10n-ca/$(OODIR) &&) true
-endif
 ifneq (,$(filter ca-valencia,$(HELPISOS)))
 	make install-package-help-ca-valencia INSTALLDIR=$(PKGDIR)-help-ca/$(OODIR) &&) true
+endif
+ifneq (,$(filter kmr-Latn,$(HELPISOS)))
+	make install-package-help-kmr-Latn INSTALLDIR=$(PKGDIR)-help-kmr/$(OODIR) &&) true
 endif
 	for PKG in $(ARCH_INDEP_PACKAGES); do \
 		cat debian/changelog \
