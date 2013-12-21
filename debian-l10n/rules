@@ -80,6 +80,10 @@ $(STAMP_DIR)/install-indep:
 	dh_testdir
 	dh_testroot
 	rm -rf $(PKGDIR)-help-* $(PKGDIR)-l10n-*
+ifneq (,$(filter sk,$(HELPISOS)))
+	# prepopulate sk help from cz
+    make install-package-help-cz INSTALLDIR=$(PKGDIR)-help-sk/$(OODIR)
+endif
 	$(foreach iso,$(filter-out en-US ca-valencia,$(LANGPACKISOS)),\
 		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	$(foreach iso,$(filter-out en-US ca-valencia,$(HELPISOS)),\
@@ -98,12 +102,6 @@ endif
 		| sed -e '/^openoffice/,$$d' \
 		> debian/$$PKG.changelog; \
 	done
-ifeq (sk,$(findstring sk,$(HELPISOS)))
-	# add fake sk help
-	mkdir -p $(PKGDIR)-help-sk/$(shell echo $(OODIR) | sed -e s/lib/share/)/help
-	ln -s cs \
-		$(PKGDIR)-help-sk/$(shell echo $(OODIR) | sed -e s/lib/share/)/help/sk
-endif
 	touch $@
 
 binary-indep: $(STAMP_DIR)/binary-indep
