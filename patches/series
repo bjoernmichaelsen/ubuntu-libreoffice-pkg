@@ -29,7 +29,7 @@ lo-xlate-lang-update-kurdish.diff
 prefer-python3.diff
 libmerged-needs-libeot.diff
 #lp-753627-readd-updated-Ubuntu-brand-palette-colors.diff
-l10n-and-non-l10n-targets.diff
-install-package-foo.diff
-uiconfig-is-l10n.diff
-registry-is-l10n.diff
+#l10n-and-non-l10n-targets.diff
+#install-package-foo.diff
+#uiconfig-is-l10n.diff
+#registry-is-l10n.diff
