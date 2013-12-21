@@ -101,12 +101,6 @@ ifeq (ca-valencia,$(findstring ca-valencia,$(HELPISOS)))
 	fi
 endif
 
-	for i in $(ARCH_INDEP_PACKAGES); do \
-		if [ -e debian/$$i.bug-script.in ]; then \
-			cat debian/$$i.bug-script.in \
-				> debian/$$i.bug-script; \
-		fi ;\
-	done
 	for PKG in $(ARCH_INDEP_PACKAGES); do \
 		cat debian/changelog \
 		| sed -e '/^openoffice/,$$d' \
