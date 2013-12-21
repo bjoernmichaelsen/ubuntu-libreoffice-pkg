@@ -25,7 +25,6 @@ wheezy-backports-python.diff
 fix-internal-hsqldb-build.diff
 javadoc-optional.diff
 #revert-ba6478560792e0eec161142c8cfbc0e08cd7a4f5.diff
-external-tarballs.diff
 lo-xlate-lang-update-kurdish.diff
 prefer-python3.diff
 libmerged-needs-libeot.diff
