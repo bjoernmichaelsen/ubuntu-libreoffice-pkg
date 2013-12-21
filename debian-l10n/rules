@@ -83,10 +83,10 @@ $(STAMP_DIR)/install-indep:
 	$(foreach iso,$(filter-out en-US ca-valencia,$(LANGPACKISOS)),\
 		make install-package-l10n-$(iso) INSTALLDIR=$(PKGDIR)-l10n-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 ifneq (,$(filter ca-valencia,$(LANGPACKISOS)))
-	make install-package-l10n-ca-valencia INSTALLDIR=$(PKGDIR)-l10n-ca/$(OODIR) &&) true
+	make install-package-l10n-ca-valencia INSTALLDIR=$(PKGDIR)-l10n-ca/$(OODIR)
 endif
 ifneq (,$(filter kmr-Latn,$(LANGPACKISOS)))
-	make install-package-l10n-kmr-Latn INSTALLDIR=$(PKGDIR)-l10n-kmr/$(OODIR) &&) true
+	make install-package-l10n-kmr-Latn INSTALLDIR=$(PKGDIR)-l10n-kmr/$(OODIR)
 endif
 ifneq (,$(filter sk,$(HELPISOS)))
 	# prepopulate sk help from cz
