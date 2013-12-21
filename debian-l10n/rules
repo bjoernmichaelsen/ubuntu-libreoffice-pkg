@@ -153,10 +153,7 @@ endif
 ifeq (he,$(findstring he,$(LANGPACKISOS)))
 	perl -pi -e 's#<prop oor:name="CTLSequenceChecking"><value>true</value></prop>#<prop oor:name="CTLSequenceChecking"><value>false</value></prop>#' $(PKGDIR)-l10n-he/$(OODIR)/share/registry/ctl_he.xcd
 endif
-	for pkg in $(ARCH_INDEP_PACKAGES) ; do \
-	  rm -f debian/$$pkg.*.debhelper;\
-	  rm -rf debian/$$pkg/DEBIAN;\
-	done
+	rm -rf $(foreach pkg,$(ARCH_INDEP_PACKAGES),debian/$(pkg).*.debhelper debian/$(pkg)/DEBIAN )
 
 	dh_installdocs -i -A 
 	for p in $(ARCH_INDEP_PACKAGES); do \
