@@ -3550,9 +3550,9 @@ update-l10n:
 			$(HELPISO) \
 			< debian/debian-l10n/control.help.in \
 			>> debian/debian-l10n/control;)
-	$(foreach debdir,patches branding templates,\
+	$(foreach debdir,branding patches source templates,\
         cp -a ./debian/$(debdir) ./debian/debian-l10n/$(debdir) && ) true
-	$(foreach debfile,compat copyright source/format,\
+	$(foreach debfile,compat copyright,\
         mkdir -p $(dir ./debian/debian-l10n/$(debfile)) && \
         cp -a ./debian/$(debfile) ./debian/debian-l10n/$(debfile) && ) true
 
