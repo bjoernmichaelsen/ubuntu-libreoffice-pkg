@@ -96,10 +96,10 @@ endif
 		make install-package-help-$(iso) INSTALLDIR=$(PKGDIR)-help-`echo $(iso)|tr A-Z a-z`/$(OODIR) &&) true
 	# and ca-valencia in -ca...
 ifneq (,$(filter ca-valencia,$(HELPISOS)))
-	make install-package-help-ca-valencia INSTALLDIR=$(PKGDIR)-help-ca/$(OODIR) &&) true
+	make install-package-help-ca-valencia INSTALLDIR=$(PKGDIR)-help-ca/$(OODIR)
 endif
 ifneq (,$(filter kmr-Latn,$(HELPISOS)))
-	make install-package-help-kmr-Latn INSTALLDIR=$(PKGDIR)-help-kmr/$(OODIR) &&) true
+	make install-package-help-kmr-Latn INSTALLDIR=$(PKGDIR)-help-kmr/$(OODIR)
 endif
 	for PKG in $(ARCH_INDEP_PACKAGES); do \
 		cat debian/changelog \
